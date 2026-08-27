@@ -82,7 +82,39 @@ The clean 166-id allow-list lives in `data/all_resources.json` and is passed as
 `resource_filters` on every `/find` and `/ask` call. `app.py` also cross-checks every
 citation's resource id against this allow-list server-side as a backstop, per the
 documented platform lesson that `/ask`'s `resource_filters` enforcement is weaker than
-`/find`'s.
+`/find`'s. `app.py` also filters a second, narrower allow-list (`CUSTOMER_FACING_IDS`) out
+of nav/legal/admin pages (Sitemap, Contact Us, Trade Information, Privacy, Disclaimer,
+Copyright, four narrow Overnight-Camp-Subsidy FAQ/T&C sub-pages) that are real, clean,
+non-duplicate resources but never belong in a tourist-facing citation, suggestion, or
+catalogue listing — used everywhere the KB is queried or a listing is rendered.
+
+### Every ingested page opens with the site's own nav boilerplate — strip it, don't scroll past it
+
+**A recurring ARAG-ingest pattern, not specific to this KB: a scraped page's extracted text
+includes the site's own global chrome (skip link, alert banner, search widget, and — the
+biggest chunk — the full multi-category mega menu) BEFORE the real article content.**
+Confirmed byte-identical across 165 of this KB's 166 clean resources (real defect found live,
+27 Aug 2026: a citation click-through opened on raw text like `Skip to main content... View
+alerts... Open search... * See & Do`, with the real, correctly-highlighted content sitting
+further down the page). An earlier fix relied on a delayed client-side `scrollIntoView` to
+get past this, which is fragile — a screen recording or a fast viewer can land on the junk
+before the scroll fires.
+
+**Fix, in `app.py`:** `_strip_nav_boilerplate()` finds the exact end-of-mega-menu marker
+(`"* [Deals](/deals)\n\nNeed to get in touch? [Contact us](/contact-us)\n\n"` — verified
+present in 165/166 resources) and trims everything up to and including it before the text
+ever reaches the client. `/api/resource/{id}` returns a `trim_offset` alongside the cleaned
+text so a citation's paragraph offsets (computed by ARAG against the *original*, untrimmed
+page) can be shifted onto the shorter text before slicing/highlighting — and
+`_parse_ask_ndjson` (and the itinerary planner's own paragraph selection) drop any citation
+whose grounding falls *entirely* inside the stripped junk, rather than offering a source
+tile with no real highlight behind it.
+
+**If this KB is ever reseeded, or a new one stood up against the same site:** re-verify the
+marker still matches (`grep -c` it across a fresh `data/resource_cache.json` the same way —
+see `scripts/build_resource_cache.py`) before assuming citations will render clean. A
+different scrape pass, a site redesign, or a different source site entirely will very likely
+need a different marker string.
 
 ## Content honesty — coverage gaps disclosed, not hidden
 
