@@ -41,24 +41,10 @@
   </div>
 </section>
 
-<script>window.RW_PAGE = {
-  nav: 'visit',
-  reveal: {
-    title: 'How the Visit assistant works',
-    what: 'Logistics questions (ferry, flights, bikes, accessibility) are answered from the island\'s own real transport and access pages, cited back to source.',
-    flow: [
-      {label:'Your question', detail:'or a quick-ask chip'},
-      {label:'App proxy'},
-      {label:'ARAG /ask', detail:'neighbouring-paragraph context, scoped to 166 real pages'},
-      {label:'Cited answer'},
-    ],
-    why: 'Practical logistics are the #1 reason a visitor abandons planning — a fast, accurate answer here is the difference between a booking and a bounce.',
-    gaps: 'Accessibility coverage on the real site is currently thin (one page) — if a question genuinely can\'t be grounded, the concierge says so honestly rather than guessing.',
-  }
-};</script>
+<script>window.RW_PAGE = { nav: 'visit', revealKey: 'visit' };</script>
 <script src="/static/js/shared.js"></script>
 <script src="/static/js/i18n.js"></script>
-<script src="/static/js/ask-widget.js"></script>
+<script src="/static/js/assistant-widget.js"></script>
 <script>
   RWAsk.wire('#rw-visit-q', '#rw-visit-ask', '#rw-visit-answer', { getLang: () => 'en' });
   document.querySelectorAll('[data-q]').forEach(btn => {

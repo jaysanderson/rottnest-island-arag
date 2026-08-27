@@ -31,7 +31,7 @@
   }
 
   async function ask(query, lang) {
-    const res = await fetch("/api/ask", {
+    const res = await fetch("/api/assistant", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, lang: lang || "en" }),

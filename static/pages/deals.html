@@ -34,22 +34,10 @@
   </div>
 </section>
 
-<script>window.RW_PAGE = {
-  nav: 'deals',
-  reveal: {
-    title: 'How the Deals page works',
-    what: 'Deals and subsidy questions are grounded in the island\'s own current offer and subsidy-program pages — the catalogue below lists them via /find, generated copy same as every other listing.',
-    flow: [
-      {label:'Your question'},
-      {label:'ARAG /ask', detail:'scoped to real deals/subsidy pages'},
-      {label:'Cited terms', detail:'never an invented price or eligibility rule'},
-    ],
-    why: 'Subsidy terms and offer conditions are exactly the kind of content that\'s costly to get wrong — grounding means the concierge can\'t improvise an eligibility rule that doesn\'t exist.',
-  }
-};</script>
+<script>window.RW_PAGE = { nav: 'deals', revealKey: 'deals' };</script>
 <script src="/static/js/shared.js"></script>
 <script src="/static/js/i18n.js"></script>
-<script src="/static/js/ask-widget.js"></script>
+<script src="/static/js/assistant-widget.js"></script>
 <script>
   RWAsk.wire('#rw-deals-q', '#rw-deals-ask', '#rw-deals-answer', { getLang: () => 'en' });
 

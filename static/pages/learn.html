@@ -43,23 +43,10 @@
   </div>
 </section>
 
-<script>window.RW_PAGE = {
-  nav: 'learn',
-  reveal: {
-    title: 'How the multilingual concierge works',
-    what: 'The same 166 real Wadjemup pages ground answers in whichever of four languages you ask in — the model answers natively, it isn\'t translating a canned English reply.',
-    flow: [
-      {label:'Question', detail:'in EN / ZH / JA / FR'},
-      {label:'ARAG /ask', detail:'retrieves the real English source content, generates a native-language answer'},
-      {label:'Citations', detail:'always link to the real (English) source page'},
-      {label:'ElevenLabs voice', detail:'native speaker per language — eleven_multilingual_v2'},
-    ],
-    why: 'A Mandarin- or Japanese-speaking visitor gets the exact same grounded, trustworthy experience an English speaker gets — not a second-class "translate this page" button. Trust here comes from resolvable citations, not a raw per-language quality score (REMi under-scores non-English answers that are equally well-grounded).',
-  }
-};</script>
+<script>window.RW_PAGE = { nav: 'learn', revealKey: 'learn' };</script>
 <script src="/static/js/shared.js"></script>
 <script src="/static/js/i18n.js"></script>
-<script src="/static/js/ask-widget.js"></script>
+<script src="/static/js/assistant-widget.js"></script>
 <script>
 (function(){
   const suggestions = {

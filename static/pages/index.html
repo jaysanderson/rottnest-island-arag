@@ -100,23 +100,10 @@
   </div>
 </section>
 
-<script>window.RW_PAGE = {
-  nav: 'home',
-  reveal: {
-    title: 'How the Wadjemup concierge works',
-    what: 'Every "Ask" box on this site sends your question to Rottnest Island Authority\'s own visitor concierge — never a generic AI, never the open internet.',
-    flow: [
-      {label:'Your question', detail:'typed in any of 4 languages'},
-      {label:'App server proxy', detail:'KB token never reaches your browser'},
-      {label:'ARAG /ask', detail:'retrieves + grounds + generates, scoped to 166 real pages'},
-      {label:'Cited answer', detail:'every claim links to its real source page'},
-    ],
-    why: 'A visitor gets a trustworthy answer instead of hunting through menus — and Rottnest Island Authority gets every question logged as real demand signal, not a support ticket.',
-  }
-};</script>
+<script>window.RW_PAGE = { nav: 'home', revealKey: 'home' };</script>
 <script src="/static/js/shared.js"></script>
 <script src="/static/js/i18n.js"></script>
-<script src="/static/js/ask-widget.js"></script>
+<script src="/static/js/assistant-widget.js"></script>
 <script>
   RWAsk.wire('#rw-home-q', '#rw-home-ask', '#rw-home-answer', { getLang: () => RWLang.getLang(), voice: true });
 </script>

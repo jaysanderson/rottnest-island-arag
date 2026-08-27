@@ -77,20 +77,7 @@
   </div>
 </section>
 
-<script>window.RW_PAGE = {
-  nav: 'plan',
-  reveal: {
-    title: 'How the itinerary planner works — the mandatory honesty pattern',
-    what: 'This is the flagship feature: a trip planner built entirely from real, retrieved Wadjemup content, with a structural guarantee against fabricated recommendations.',
-    flow: [
-      {label:'Your brief', detail:'days, style, constraints'},
-      {label:'ARAG /find', detail:'retrieves real candidate pages for that brief — their titles become the ONLY allowed sources'},
-      {label:'Enum-constrained /ask', detail:'answer_json_schema forces every "source" field to be one of those real titles — the model literally cannot invent a source'},
-      {label:'Itinerary', detail:'each item deep-links to its real source page'},
-    ],
-    why: 'Early testing found that a free-text "source" field lets a model fabricate a plausible-sounding page that doesn\'t exist — this schema-enum pattern closes that gap structurally, not by asking nicely. It\'s the difference between a demo and something you could actually ship to visitors.',
-  }
-};</script>
+<script>window.RW_PAGE = { nav: 'plan', revealKey: 'plan' };</script>
 <script src="/static/js/shared.js"></script>
 <script>
 (function(){

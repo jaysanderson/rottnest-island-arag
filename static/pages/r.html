@@ -34,19 +34,7 @@
 
 <div style="height:60px;"></div>
 
-<script>window.RW_PAGE = {
-  nav: '',
-  reveal: {
-    title: 'How citation highlighting works',
-    what: 'This is the real extracted text of the source page ARAG ingested. When you arrive from a cited answer, the exact paragraph that grounded it is highlighted and scrolled to automatically.',
-    flow: [
-      {label:'Citation clicked', detail:'carries the exact paragraph id + character offsets'},
-      {label:'App proxy', detail:'resolves the resource\'s cached extracted text'},
-      {label:'Render + highlight', detail:'the cited character range is marked and scrolled into view'},
-    ],
-    why: 'Trust means being able to check the receipts — every claim traces back to the exact sentence it came from, not just "somewhere in this document".',
-  }
-};</script>
+<script>window.RW_PAGE = { nav: '', revealKey: 'resource' };</script>
 <script src="/static/js/shared.js"></script>
 <script>
 (function(){

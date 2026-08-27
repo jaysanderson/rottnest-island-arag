@@ -116,16 +116,38 @@
   document.body.appendChild(footer);
 
   // ---------- Solution-architecture reveal ----------
-  const reveal = PAGE.reveal || {
-    title: "How this page works",
-    flow: [{ label: "Browser" }, { label: "App proxy" }, { label: "ARAG" }, { label: "Answer" }],
-    what: "This page is powered by Progress Agentic RAG underneath the Rottnest Island Authority's own visitor experience.",
-    why: "Grounded, cited answers build visitor trust and cut support load.",
-  };
-
+  // The content — which names real ARAG mechanisms (/ask, /find, Nuclia) —
+  // is fetched from the server ONLY when the viewer opens the modal, and the
+  // overlay shell stays empty until then. Gate 11 designates this modal as
+  // the one deliberate place those mechanics are shown, but even CSS-hidden
+  // static HTML containing those strings reads as a leak to a page-source
+  // scan; fetching on demand keeps the default rendered page genuinely clean
+  // (matching how the React-based flagship demos lazy-mount theirs).
+  const revealKey = PAGE.revealKey || "home";
   const overlay = el(`
     <div class="arag-reveal-overlay" id="rw-reveal-overlay">
-      <div class="arag-reveal-modal">
+      <div class="arag-reveal-modal" id="rw-reveal-modal"></div>
+    </div>
+  `);
+  document.body.appendChild(overlay);
+  let revealBuilt = false;
+
+  async function buildReveal() {
+    const modal = document.getElementById("rw-reveal-modal");
+    modal.innerHTML = '<div style="padding:40px;text-align:center;font-family:var(--arag-font-text);">Loading…</div>';
+    let reveal;
+    try {
+      const res = await fetch("/api/reveal/" + revealKey);
+      reveal = await res.json();
+    } catch (e) {
+      reveal = {
+        title: "How this page works",
+        flow: [{ label: "Browser" }, { label: "App proxy" }, { label: "Answer" }],
+        what: "This page is powered by Progress Agentic RAG underneath the Rottnest Island Authority's own visitor experience.",
+        why: "Grounded, cited answers build visitor trust and cut support load.",
+      };
+    }
+    modal.innerHTML = `
         <div class="arag-reveal-head">
           <h2>${reveal.title}</h2>
           <button class="arag-reveal-close" id="rw-reveal-close" aria-label="Close">✕</button>
@@ -161,13 +183,16 @@
               : ""
           }
         </div>
-      </div>
-    </div>
-  `);
-  document.body.appendChild(overlay);
+    `;
+    document.getElementById("rw-reveal-close").addEventListener("click", () => overlay.classList.remove("rw-open"));
+  }
 
-  function openReveal() {
+  async function openReveal() {
     overlay.classList.add("rw-open");
+    if (!revealBuilt) {
+      await buildReveal();
+      revealBuilt = true;
+    }
     const steps = overlay.querySelectorAll(".arag-flow-step");
     steps.forEach((s) => s.classList.remove("arag-flow-anim", "arag-flow-active"));
     let i = 0;
@@ -182,7 +207,6 @@
     setTimeout(tick, 200);
   }
   document.getElementById("rw-reveal-btn").addEventListener("click", openReveal);
-  document.getElementById("rw-reveal-close").addEventListener("click", () => overlay.classList.remove("rw-open"));
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) overlay.classList.remove("rw-open");
   });
