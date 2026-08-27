@@ -69,7 +69,7 @@
     if (m && parseInt(m[2], 10) <= raw.length) {
       const start = parseInt(m[1], 10), end = parseInt(m[2], 10);
       bodyHtml = RWAsk.renderMarkdown(raw.slice(0, start), { plainLinks: true })
-        + '<mark class="rw-highlight" id="rw-hl">' + RWAsk.renderMarkdown(raw.slice(start, end), { plainLinks: true }) + '</mark>'
+        + '<div class="rw-highlight" id="rw-hl">' + RWAsk.renderMarkdown(raw.slice(start, end), { plainLinks: true }) + '</div>'
         + RWAsk.renderMarkdown(raw.slice(end), { plainLinks: true });
       document.getElementById('rw-src-highlight-note').style.display = 'inline-flex';
     } else {

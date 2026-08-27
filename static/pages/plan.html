@@ -110,7 +110,7 @@
               <div>
                 <div class="rw-itin-activity">${item.activity}</div>
                 <div class="rw-itin-why">${item.why}</div>
-                ${item.resource_id ? `<a class="rw-itin-src" href="/r/${item.resource_id}">📍 ${item.source_title.replace(' | Rottnest Island','')} →</a>` : ''}
+                ${item.resource_id ? `<a class="rw-itin-src" href="/r/${item.resource_id}?p=${encodeURIComponent(item.paragraph_id || '')}">📍 ${item.source_title.replace(' | Rottnest Island','')} →</a>` : ''}
               </div>
             </div>
           `).join('')}

@@ -79,6 +79,28 @@ VOICE_MAP = {
     "fr": "40Rmxv431tMaTTYB09bz",  # Virginie - French
 }
 
+LANGUAGE_NAMES = {"en": "English", "zh": "Mandarin Chinese", "ja": "Japanese", "fr": "French"}
+
+
+def _language_directive(lang: str) -> str:
+    """An explicit instruction appended to every /ask query so the answer
+    language is deterministic, never left to the model inferring from the
+    question's own script (real defect, found live by demo-tester 27 Aug
+    2026: 7 of 9 non-English test questions came back in English despite the
+    correct language selected — root cause was that `lang` reached this app
+    but was never actually forwarded into the ARAG payload). Always stated,
+    including for English, so there is one code path, not a special case."""
+    name = LANGUAGE_NAMES.get(lang, "English")
+    return (
+        f"\n\nIMPORTANT INSTRUCTION FOR YOUR RESPONSE: write your entire reply "
+        f"in {name}, as a native {name} speaker would, regardless of what "
+        f"language this question happens to be written in. Do not mention, "
+        f"apologise for, or comment on language or translation in any way — "
+        f"just answer naturally and directly in {name}, as if the visitor had "
+        f"asked their question in {name} to begin with."
+    )
+
+
 PERSONA_QUERIES = {
     "family": "family friendly activities safe for young children, easy access, shallow calm water, playgrounds, short walks",
     "heritage": "Aboriginal culture and history, colonial and military history, heritage buildings, museum exhibits, cultural tours",
@@ -318,7 +340,7 @@ def api_ask(req: AskRequest):
     to the clean resource allow-list. Also backs the persistent chat widget
     (Standard: real chat-context threading) when `history` is supplied."""
     payload = {
-        "query": req.query,
+        "query": req.query + _language_directive(req.lang),
         "citations": True,
         "show": ["basic"],
         "resource_filters": CLEAN_IDS,
@@ -396,6 +418,7 @@ class ItineraryRequest(BaseModel):
     constraints: str = ""
     refine: Optional[str] = None
     previous: Optional[dict] = None
+    lang: str = "en"
 
 
 @app.post("/api/itinerary")
@@ -404,6 +427,14 @@ def api_itinerary(req: ItineraryRequest):
     /find for real candidate titles, THEN an enum-constrained answer_json_schema
     /ask so the model can only cite a source_title that genuinely exists.
     Never a bare /ask with a free-text source field (de-risk proved fabrication)."""
+    # The RETRIEVAL query stays natural language (semantic search quality
+    # matters most here); the GENERATION query below is a separate, stronger
+    # string with explicit imperative instructions — real defects found live
+    # by demo-tester, 27 Aug 2026: (a) the UI's own placeholder constraint
+    # text "no long walks" didn't reliably reshape the plan across repeated
+    # runs when folded in as a soft clause, and (b) one run cited all 8 items
+    # from a single source page. Both needed the instruction stated as a
+    # requirement, not a mention.
     base_query = f"{req.days} day itinerary, {req.style} style"
     if req.constraints:
         base_query += f", {req.constraints}"
@@ -425,6 +456,13 @@ def api_itinerary(req: ItineraryRequest):
 
     candidate_titles = []
     title_to_id = {}
+    # Best-scoring paragraph id per resource, captured from this same /find
+    # call — reused below so an itinerary citation can highlight+scroll to
+    # the exact passage on /r/, the same as every other citation surface
+    # (real defect found live by demo-tester, 27 Aug 2026: itinerary
+    # citations only carried resource_id/uri, no paragraph offset, so
+    # clicking one opened the page with nothing highlighted).
+    best_paragraph_id = {}
     for rid, res in find_data.get("resources", {}).items():
         if rid not in CLEAN_ID_SET:
             continue
@@ -432,6 +470,21 @@ def api_itinerary(req: ItineraryRequest):
         if title and title not in candidate_titles:
             candidate_titles.append(title)
             title_to_id[title] = rid
+        best_score, best_pid = -1.0, None
+        for field_key, field in res.get("fields", {}).items():
+            # Only the real body-content field ("/u/link", the ingested page
+            # text cached in resource_cache.json) — /find can also return a
+            # synthetic paragraph over the "/a/title" field, whose character
+            # offsets are into the short title string, not the cached body
+            # text r.html slices for highlighting. Using one of those would
+            # highlight the wrong span entirely.
+            if "/u/link" not in field_key:
+                continue
+            for pid, para in field.get("paragraphs", {}).items():
+                if para.get("score", 0) > best_score:
+                    best_score, best_pid = para.get("score", 0), pid
+        if best_pid:
+            best_paragraph_id[rid] = best_pid
 
     if not candidate_titles:
         return {
@@ -480,8 +533,25 @@ def api_itinerary(req: ItineraryRequest):
         },
     }
 
+    generation_query = base_query
+    if req.constraints:
+        # Stated as a hard requirement, not folded into the descriptive
+        # sentence above — the placeholder text ("no long walks") the UI
+        # itself invites people to type must reliably reshape the plan.
+        generation_query += (
+            f"\n\nHARD CONSTRAINT — the itinerary MUST genuinely satisfy this, "
+            f"not just mention it: {req.constraints}. If an activity would "
+            f"violate this constraint, do not include it."
+        )
+    generation_query += (
+        "\n\nDraw activities from a SPREAD of at least 3 different real source "
+        "pages across the whole itinerary where the candidates allow it — do "
+        "not cite the same single page for every item."
+    )
+    generation_query += _language_directive(req.lang)
+
     ask_payload = {
-        "query": base_query,
+        "query": generation_query,
         "answer_json_schema": schema,
         "citations": False,
         "show": ["basic"],
@@ -510,6 +580,7 @@ def api_itinerary(req: ItineraryRequest):
             meta = _resource_meta(rid)
             item["resource_id"] = rid
             item["source_uri"] = meta["uri"]
+            item["paragraph_id"] = best_paragraph_id.get(rid, "")
             clean_items.append(item)
         day["items"] = clean_items
 

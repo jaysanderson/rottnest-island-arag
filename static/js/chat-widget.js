@@ -317,6 +317,24 @@
     true
   );
 
+  // Fade the closed launcher out while the visitor is actively scrolling on
+  // a narrow screen, and back in ~400ms after scrolling stops (GM revision,
+  // 27 Aug 2026 — the light mitigation requested for the residual /stay
+  // catalogue-card overlap: a floating launcher over content mid-scroll is
+  // the accepted trade-off every persistent chat widget makes, but it
+  // should never sit there at rest once the visitor has stopped).
+  let scrollFadeTimer = null;
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!isNarrowViewport() || isOpen()) return;
+      fab.classList.add("rw-chat-fab-scrolling");
+      clearTimeout(scrollFadeTimer);
+      scrollFadeTimer = setTimeout(() => fab.classList.remove("rw-chat-fab-scrolling"), 400);
+    },
+    { passive: true }
+  );
+
   document.getElementById("rw-chat-fab").addEventListener("click", () => setOpen(!isOpen()));
   document.getElementById("rw-chat-close").addEventListener("click", () => setOpen(false));
   document.getElementById("rw-chat-reset").addEventListener("click", () => {
