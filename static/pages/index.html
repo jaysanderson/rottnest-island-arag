@@ -18,22 +18,19 @@
   <div class="rw-container" style="position:relative; padding:96px 24px 110px; display:grid; grid-template-columns: 1.1fr 0.9fr; gap:48px; align-items:center;">
     <div>
       <div class="rw-eyebrow" style="color:#FDBC3F;">Wadjemup · Western Australia</div>
-      <h1 class="rw-display" style="color:white; margin-top:10px;">The Island That<br/>Answers Back.</h1>
+      <h1 class="rw-display" style="color:white; margin-top:10px;">G'day! The Island<br/>That Chats Back.</h1>
       <p class="rw-lead" style="color:#AEE2E9; max-width:46ch; margin-top:18px;">
-        Every guide, trail and season on Wadjemup — now a conversation. Ask a real question,
-        get a real cited answer drawn from the island's own information, in the language you
-        actually speak.
+        Every guide, trail and season on Wadjemup, sorted by a friendly local named Kwoka.
+        Ask away, get the real oil straight from the island's own info, in whatever language
+        you're comfortable in.
       </p>
       <div class="rw-flex rw-gap-16 rw-mt-32" style="flex-wrap:wrap;">
         <a href="/plan" class="rw-btn rw-btn-primary">Plan My Visit</a>
-        <a href="/learn" class="rw-btn rw-btn-outline-light">Ask About the Island</a>
+        <a href="/learn" class="rw-btn rw-btn-outline-light">Ask Kwoka About the Island</a>
       </div>
-      <div class="rw-flex rw-gap-12 rw-mt-24" style="flex-wrap:wrap;">
+      <div class="rw-flex rw-gap-12 rw-mt-24" style="flex-wrap:wrap; align-items:center;">
         <span style="font-size:0.78rem; color:#AEE2E9;">Ask in:</span>
-        <button class="rw-lang-pill rw-persona-pill" data-lang="en" style="border-color:#AEE2E9;color:white;padding:5px 12px;font-size:0.72rem;">EN</button>
-        <button class="rw-lang-pill rw-persona-pill" data-lang="zh" style="border-color:#AEE2E9;color:white;padding:5px 12px;font-size:0.72rem;">中文</button>
-        <button class="rw-lang-pill rw-persona-pill" data-lang="ja" style="border-color:#AEE2E9;color:white;padding:5px 12px;font-size:0.72rem;">日本語</button>
-        <button class="rw-lang-pill rw-persona-pill" data-lang="fr" style="border-color:#AEE2E9;color:white;padding:5px 12px;font-size:0.72rem;">FR</button>
+        <div id="rw-home-lang-mount"></div>
       </div>
     </div>
     <div>
@@ -88,7 +85,7 @@
 
 <section class="rw-section rw-section-white">
   <div class="rw-container" style="max-width:820px;">
-    <h2 class="rw-h2">Ask the island something.</h2>
+    <h2 class="rw-h2">Ask Kwoka something.</h2>
     <p class="rw-body-text" style="color:var(--rw-teal-darker); margin-top:6px;">Try: "Where's the best spot to see quokkas?" or "What's the ferry timetable like in winter?"</p>
     <div class="rw-mt-24">
       <div class="rw-flex rw-gap-12">
@@ -106,6 +103,7 @@
 <script src="/static/js/assistant-widget.js"></script>
 <script src="/static/js/chat-widget.js"></script>
 <script>
+  RWLang.mountDropdown(document.getElementById('rw-home-lang-mount'), 'rw-lang-select rw-lang-select-dark');
   RWAsk.wire('#rw-home-q', '#rw-home-ask', '#rw-home-answer', { getLang: () => RWLang.getLang(), voice: true });
 </script>
 </body>

@@ -67,7 +67,13 @@ def _load_catalog_copy():
 CATALOG_COPY = _load_catalog_copy()
 
 VOICE_MAP = {
-    "en": "CFN1FeTIoSu4xm6mDCkI",  # David - Australian male
+    # Joel - Calm & Friendly Australian (ElevenLabs shared library), swapped
+    # from David 27 Aug 2026: David is a genuine AU accent but ElevenLabs'
+    # own description positions him for "technical documentation... corporate
+    # training... grounded, matter-of-fact authority" - the wrong register for
+    # a WA-tourist-island welcome. Joel is explicitly labelled
+    # descriptive=relaxed, use_case=conversational - the right register.
+    "en": "0zgVQzF8uy6TauIra2W1",
     "zh": "ZqMiFUjytue2TImoYCpY",  # Magge - Mandarin
     "ja": "xeizJaHsHrlfQdJJQmlK",  # Garyu - Japanese
     "fr": "40Rmxv431tMaTTYB09bz",  # Virginie - French

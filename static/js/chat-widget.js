@@ -2,10 +2,16 @@
    27 Aug 2026). Genuinely multi-turn: the running transcript is threaded as
    ARAG's own /ask `context` field (see app.py's AskRequest.history), so a
    follow-up like "is it open then" or "how do I get there" resolves against
-   what was already said, not answered in isolation. Multilingual (reuses
-   RWLang), grounded + cited + honest decline (same /api/assistant endpoint
-   every other ask surface uses), and voice is ONE TAP per answer — not
-   buried, per the GM's "Jay couldn't find it" feedback.
+   what was already said, not answered in isolation. Multilingual via a
+   single dropdown (RWLang.mountDropdown — retiring the old chip row's
+   listener-order race entirely), grounded + cited + honest decline (same
+   /api/assistant endpoint every other ask surface uses), and voice is ONE
+   TAP per answer — not buried, per the GM's "Jay couldn't find it" feedback.
+
+   The concierge has a face and a name: Kwoka (EN — the real Noongar word
+   for quokka, KB-verified) / 跳跳 (ZH) / クオちゃん (JA) / Coco (FR), a
+   quokka avatar in the site's own line-art style, changing with the
+   language dropdown (GM revision, 27 Aug 2026).
 
    State (history + open/closed) persists in sessionStorage so the
    conversation survives navigating between pages within a visit. */
@@ -13,6 +19,23 @@
   const HISTORY_KEY = "rw_chat_history";
   const OPEN_KEY = "rw_chat_open";
   const MAX_HISTORY = 12;
+
+  // A friendly, on-brand line-art quokka face — same teal/navy/gold
+  // linework as the rest of the site's decorative motifs, not clip-art.
+  // Badge version (own circular backdrop) for the navy chat header;
+  // face-only version (transparent) for sitting on the already-gold FAB.
+  const QUOKKA_FACE = `
+      <ellipse cx="20" cy="16" rx="7" ry="10" transform="rotate(-18 20 16)" fill="#FFF5E2" stroke="#103449" stroke-width="2"/>
+      <ellipse cx="44" cy="16" rx="7" ry="10" transform="rotate(18 44 16)" fill="#FFF5E2" stroke="#103449" stroke-width="2"/>
+      <ellipse cx="32" cy="36" rx="19" ry="17" fill="#FFF5E2" stroke="#103449" stroke-width="2.2"/>
+      <circle cx="25" cy="33" r="2.6" fill="#103449"/>
+      <circle cx="39" cy="33" r="2.6" fill="#103449"/>
+      <ellipse cx="32" cy="41" rx="3.4" ry="2.4" fill="#103449"/>
+      <path d="M27 46 Q32 50 37 46" stroke="#103449" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M14 34 Q9 33 8 30" stroke="#103449" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+      <path d="M50 34 Q55 33 56 30" stroke="#103449" stroke-width="1.4" stroke-linecap="round" fill="none"/>`;
+  const QUOKKA_AVATAR_SVG = `<svg viewBox="0 0 64 64" width="34" height="34" fill="none"><circle cx="32" cy="32" r="32" fill="#FDBC3F"/>${QUOKKA_FACE}</svg>`;
+  const QUOKKA_FACE_ONLY_SVG = `<svg viewBox="0 0 64 64" width="30" height="30" fill="none">${QUOKKA_FACE}</svg>`;
 
   function loadHistory() {
     try {
@@ -39,26 +62,24 @@
   }
 
   const fab = el(`
-    <button id="rw-chat-fab" aria-label="Ask Wadjemup" type="button">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-      <span id="rw-chat-fab-label">Ask Wadjemup</span>
+    <button id="rw-chat-fab" aria-label="Ask the concierge" type="button">
+      <span class="rw-chat-fab-avatar">${QUOKKA_FACE_ONLY_SVG}</span>
+      <span id="rw-chat-fab-label">Ask Kwoka</span>
     </button>
   `);
 
   const panel = el(`
-    <div id="rw-chat-panel" class="rw-chat-panel" role="dialog" aria-label="Ask Wadjemup chat">
+    <div id="rw-chat-panel" class="rw-chat-panel" role="dialog" aria-label="Chat with the Wadjemup concierge">
       <div class="rw-chat-head">
         <div class="rw-chat-head-title">
-          <span class="rw-chat-dot"></span>
-          Ask Wadjemup
+          <span class="rw-chat-avatar">${QUOKKA_AVATAR_SVG}</span>
+          <span>
+            <span class="rw-chat-dot"></span>
+            <span id="rw-chat-name">Kwoka</span>
+          </span>
         </div>
         <div class="rw-chat-head-actions">
-          <div class="rw-chat-langs" id="rw-chat-langs">
-            <button class="rw-lang-pill rw-chat-lang-pill" data-lang="en">EN</button>
-            <button class="rw-lang-pill rw-chat-lang-pill" data-lang="zh">中文</button>
-            <button class="rw-lang-pill rw-chat-lang-pill" data-lang="ja">日本語</button>
-            <button class="rw-lang-pill rw-chat-lang-pill" data-lang="fr">FR</button>
-          </div>
+          <div id="rw-chat-lang-mount"></div>
           <button id="rw-chat-reset" class="rw-chat-icon-btn" title="Reset conversation" type="button">↺</button>
           <button id="rw-chat-close" class="rw-chat-icon-btn" title="Close" type="button">✕</button>
         </div>
@@ -97,12 +118,52 @@
     m.scrollTop = m.scrollHeight;
   }
 
+  // Welcome copy per language — a short, warm greeting in the visitor's own
+  // language, not an English sentence with a foreign name spliced in (real
+  // bug found live, 27 Aug 2026: switching to French before asking anything
+  // still showed "G'day! I'm Coco" in English).
+  const WELCOME = {
+    en: {
+      greeting: (name) => `G'day! I'm ${name}`,
+      body: "— ask me anything about Wadjemup: beaches, quokkas, the ferry, history, where to stay. I only ever answer from the island's own real information, and I'll tell you straight if I don't know something.",
+      sub: "Switch language up top any time — I'll answer natively and my name changes too.",
+    },
+    zh: {
+      greeting: (name) => `你好！我是 ${name}`,
+      body: "— 关于Wadjemup的一切都可以问我：海滩、短尾矮袋鼠、渡轮、历史、住宿。我只会根据岛上真实的资料回答，如果我不知道，我会如实告诉你。",
+      sub: "随时可以切换语言 — 我会用当地语言回答，我的名字也会跟着变。",
+    },
+    ja: {
+      greeting: (name) => `こんにちは！${name}です`,
+      body: "— ワジェマップについて何でも聞いてください：ビーチ、クオッカ、フェリー、歴史、宿泊先。島の本当の情報だけをもとにお答えします。分からないことは正直にお伝えします。",
+      sub: "いつでも言語を切り替えられます — その言語でお答えし、名前も変わります。",
+    },
+    fr: {
+      greeting: (name) => `Bonjour ! Je suis ${name}`,
+      body: "— posez-moi vos questions sur Wadjemup : plages, quokkas, ferry, histoire, hébergement. Je réponds uniquement à partir des vraies informations de l'île, et je vous le dirai honnêtement si je ne sais pas.",
+      sub: "Changez de langue à tout moment en haut — je répondrai nativement et mon nom changera aussi.",
+    },
+  };
+
+  function updateConciergeName() {
+    const name = RWLang.getConciergeName(RWLang.getLang());
+    document.getElementById("rw-chat-name").textContent = name;
+    document.getElementById("rw-chat-fab-label").textContent = "Ask " + name;
+    panel.setAttribute("aria-label", "Chat with " + name + ", the Wadjemup concierge");
+    // Re-render the welcome message in the new language too, but only while
+    // the conversation is still empty — never rewrite real transcript turns.
+    if (!history.length) renderEmptyState();
+  }
+
   function renderEmptyState() {
     const messages = document.getElementById("rw-chat-messages");
+    const lang = RWLang.getLang();
+    const name = RWLang.getConciergeName(lang);
+    const w = WELCOME[lang] || WELCOME.en;
     messages.innerHTML = `
       <div class="rw-chat-welcome">
-        <p><strong>Kia ora! Ask me anything about Wadjemup</strong> — beaches, quokkas, the ferry, history, where to stay. I only answer from the island's own real information, and I'll tell you honestly if I don't know.</p>
-        <p class="rw-chat-welcome-sub">Switch language above any time — I answer natively in EN, 中文, 日本語 or Français.</p>
+        <p><strong>${w.greeting(name)}</strong> ${w.body}</p>
+        <p class="rw-chat-welcome-sub">${w.sub}</p>
       </div>`;
   }
 
@@ -125,8 +186,7 @@
       return;
     }
     messages.innerHTML = history.map((t, i) => bubbleHtml({ ...t, idx: i })).join("");
-    // Attach voice + source actions for the most recent assistant turn (the
-    // one with citations/answer text cached alongside it).
+    // Attach voice + source actions for every assistant turn.
     history.forEach((t, i) => {
       if (t.author !== "NUCLIA") return;
       const actionsEl = messages.querySelector(`.rw-chat-actions[data-idx="${i}"]`);
@@ -215,13 +275,47 @@
       renderHistory();
     } catch (e) {
       typingEl.remove();
-      history.push({ author: "NUCLIA", text: "Something went wrong reaching the concierge. Please try again.", citations: [] });
+      history.push({ author: "NUCLIA", text: "Ah, something went wrong on my end there — give it another go?", citations: [] });
       saveHistory(history);
       renderHistory();
     } finally {
       sendBtn.disabled = false;
     }
   }
+
+  // Hide the FAB on narrow screens whenever a DIFFERENT input/textarea on the
+  // page has focus (real defect found live on mobile /learn, GM revision
+  // 27 Aug 2026: the fixed launcher sat directly on top of that page's own
+  // "Ask" submit button when the on-screen keyboard was open, blocking the
+  // tap). A closed chat launcher never needs to compete with whatever the
+  // visitor is actively filling in elsewhere on the page.
+  function isNarrowViewport() {
+    return window.innerWidth <= 640;
+  }
+  document.addEventListener(
+    "focusin",
+    (e) => {
+      if (!isNarrowViewport() || isOpen()) return;
+      const t = e.target;
+      const isChatField = panel.contains(t);
+      if ((t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT") && !isChatField) {
+        fab.classList.add("rw-chat-fab-hidden");
+      }
+    },
+    true
+  );
+  document.addEventListener(
+    "focusout",
+    () => {
+      setTimeout(() => {
+        const active = document.activeElement;
+        const stillExternalField =
+          active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.tagName === "SELECT") && !panel.contains(active);
+        if (!stillExternalField) fab.classList.remove("rw-chat-fab-hidden");
+      }, 80);
+    },
+    true
+  );
 
   document.getElementById("rw-chat-fab").addEventListener("click", () => setOpen(!isOpen()));
   document.getElementById("rw-chat-close").addEventListener("click", () => setOpen(false));
@@ -235,21 +329,10 @@
     if (e.key === "Enter") send();
   });
 
-  // Chat's own language pills mirror the global RWLang state exactly — same
-  // subscription pattern as every other language-aware surface (i18n.js),
-  // no independent click listener that could desync (the exact class of bug
-  // just fixed on /learn).
-  function syncChatLangPills(lang) {
-    panel.querySelectorAll(".rw-chat-lang-pill").forEach((btn) => {
-      btn.classList.toggle("rw-active", btn.dataset.lang === lang);
-    });
-  }
-  panel.querySelectorAll(".rw-chat-lang-pill").forEach((btn) => {
-    btn.addEventListener("click", () => RWLang.setLang(btn.dataset.lang));
-  });
   if (window.RWLang) {
-    RWLang.onChange(syncChatLangPills);
-    syncChatLangPills(RWLang.getLang());
+    RWLang.mountDropdown(document.getElementById("rw-chat-lang-mount"), "rw-lang-select rw-lang-select-dark rw-chat-lang-select");
+    RWLang.onChange(updateConciergeName);
+    updateConciergeName();
   }
 
   renderHistory();

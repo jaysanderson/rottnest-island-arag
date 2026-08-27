@@ -13,14 +13,11 @@
 <section class="rw-section-dark" style="padding:56px 0 40px;">
   <div class="rw-container">
     <div class="rw-eyebrow" style="color:#FDBC3F;">Learn</div>
-    <h1 class="rw-h1" style="color:white; margin-top:8px;">Culture, history — and a concierge who speaks your language.</h1>
-    <p class="rw-lead" style="color:#AEE2E9; max-width:60ch;">Wadjemup carries deep Noongar cultural significance alongside colonial and wartime history. Ask about any of it — in English, Mandarin, Japanese or French — and hear the answer spoken back natively.</p>
-    <div class="rw-flex rw-gap-12 rw-mt-24" style="flex-wrap:wrap;">
-      <span style="font-size:0.8rem; color:#AEE2E9; align-self:center;">Language:</span>
-      <button class="rw-lang-pill rw-persona-pill" data-lang="en" style="border-color:#AEE2E9;color:white;">English</button>
-      <button class="rw-lang-pill rw-persona-pill" data-lang="zh" style="border-color:#AEE2E9;color:white;">中文 Mandarin</button>
-      <button class="rw-lang-pill rw-persona-pill" data-lang="ja" style="border-color:#AEE2E9;color:white;">日本語 Japanese</button>
-      <button class="rw-lang-pill rw-persona-pill" data-lang="fr" style="border-color:#AEE2E9;color:white;">Français</button>
+    <h1 class="rw-h1" style="color:white; margin-top:8px;">Culture, history — and Kwoka, your local guide.</h1>
+    <p class="rw-lead" style="color:#AEE2E9; max-width:60ch;">Wadjemup carries deep Noongar cultural significance alongside colonial and wartime history. Ask Kwoka about any of it — in English, Mandarin, Japanese or French — and hear the answer spoken back in a genuine native voice.</p>
+    <div class="rw-flex rw-gap-12 rw-mt-24" style="flex-wrap:wrap; align-items:center;">
+      <span style="font-size:0.8rem; color:#AEE2E9;">Language:</span>
+      <div id="rw-learn-lang-mount"></div>
     </div>
   </div>
 </section>
@@ -65,10 +62,12 @@
       document.getElementById('rw-learn-ask').click();
     }));
   }
-  // RWLang.onChange, not a second click listener on the same pills — see
-  // i18n.js's header note on the listener-order race this replaced.
+  // RWLang.onChange, not a second click listener — see i18n.js's header
+  // note on the listener-order race a dropdown's single change event avoids
+  // entirely.
   RWLang.onChange(renderSuggestions);
   renderSuggestions();
+  RWLang.mountDropdown(document.getElementById('rw-learn-lang-mount'), 'rw-lang-select rw-lang-select-dark');
 
   RWAsk.wire('#rw-learn-q', '#rw-learn-ask', '#rw-learn-answer', { getLang: () => RWLang.getLang(), voice: true });
 
