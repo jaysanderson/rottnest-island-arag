@@ -13,6 +13,7 @@ solution-architecture narrative):
 """
 import json
 import os
+import re
 import time
 from pathlib import Path
 from typing import Optional
@@ -277,6 +278,30 @@ def _resource_meta(rid: str):
     return {"id": rid, "title": r["title"], "uri": r["uri"]}
 
 
+# Every ingested page's extracted text opens with the site's own global nav -
+# skip link, alert banner, search widget, and the full multi-category mega
+# menu - before the real article begins. Confirmed present, byte-identical,
+# in 165 of 166 clean resources (real defect found live, 27 Aug 2026: a
+# citation click landed a viewer on raw scrape junk like "Skip to main
+# content... Open search... * See & Do" with no visible highlight, because
+# the cited passage sits further down the page and the previous fix relied
+# on a delayed client-side scroll to hide this rather than removing it).
+# This marker is the exact, verified end of that shared nav block across the
+# whole corpus - strip everything up to and including it, server-side, and
+# report how many characters were removed so the citation's own paragraph
+# offsets (computed against the untrimmed text) can be shifted onto the
+# trimmed text rather than pointing at the wrong span.
+_NAV_BOILERPLATE_MARKER = "* [Deals](/deals)\n\nNeed to get in touch? [Contact us](/contact-us)\n\n"
+
+
+def _strip_nav_boilerplate(text: str):
+    idx = text.find(_NAV_BOILERPLATE_MARKER)
+    if idx == -1:
+        return text, 0
+    trim_offset = idx + len(_NAV_BOILERPLATE_MARKER)
+    return text[trim_offset:], trim_offset
+
+
 def _parse_ask_ndjson(text: str):
     """Parse the /ask NDJSON stream into {answer, citations, resources, status}."""
     answer = ""
@@ -321,6 +346,23 @@ def _parse_ask_ndjson(text: str):
             continue
         if rid in seen_resource_ids:
             continue
+        # Drop a citation whose own grounding paragraph falls entirely inside
+        # the shared site-nav boilerplate every page opens with (real case
+        # found live, 27 Aug 2026, sweeping 66 citations: 8 had raw offsets
+        # like "0-2863" - genuinely the nav menu text ARAG's own retrieval
+        # scored, not a real claim in the article). Never offer a "source"
+        # whose actual evidence is nav-menu text - this is a stronger guard
+        # than just suppressing the highlight on /r/, since even a citation
+        # tile with no highlight still implies "this page supports the
+        # answer".
+        offset_match = re.search(r"/(\d+)-(\d+)$", para_id)
+        if offset_match:
+            p_start, p_end = int(offset_match.group(1)), int(offset_match.group(2))
+            cached = RESOURCE_CACHE.get(rid)
+            if cached:
+                _, trim_offset = _strip_nav_boilerplate(cached["text"])
+                if p_end <= trim_offset:
+                    continue
         seen_resource_ids.append(rid)
         meta = _resource_meta(rid)
         # try to find the paragraph text from the retrieval block
@@ -574,7 +616,9 @@ def api_itinerary(req: ItineraryRequest):
         if title and title not in candidate_titles:
             candidate_titles.append(title)
             title_to_id[title] = rid
-        best_score, best_pid = -1.0, None
+        cached = RESOURCE_CACHE.get(rid)
+        trim_offset = _strip_nav_boilerplate(cached["text"])[1] if cached else 0
+        candidates = []
         for field_key, field in res.get("fields", {}).items():
             # Only the real body-content field ("/u/link", the ingested page
             # text cached in resource_cache.json) - /find can also return a
@@ -585,10 +629,18 @@ def api_itinerary(req: ItineraryRequest):
             if "/u/link" not in field_key:
                 continue
             for pid, para in field.get("paragraphs", {}).items():
-                if para.get("score", 0) > best_score:
-                    best_score, best_pid = para.get("score", 0), pid
-        if best_pid:
-            best_paragraph_id[rid] = best_pid
+                candidates.append((para.get("score", 0), pid))
+        # Highest score first, but skip any paragraph whose range falls
+        # entirely inside the shared nav boilerplate (real case found live,
+        # 27 Aug 2026: the top-scoring paragraph for several resources was
+        # genuinely the nav-menu text, not the article) - fall through to
+        # the next-best real paragraph instead.
+        for _score, pid in sorted(candidates, key=lambda x: x[0], reverse=True):
+            m = re.search(r"/(\d+)-(\d+)$", pid)
+            if m and int(m.group(2)) <= trim_offset:
+                continue
+            best_paragraph_id[rid] = pid
+            break
 
     if not candidate_titles:
         return {
@@ -733,13 +785,18 @@ def api_resource(resource_id: str):
     if not r:
         raise HTTPException(404, "not found")
     copy = CATALOG_COPY.get(resource_id, {})
+    clean_text, trim_offset = _strip_nav_boilerplate(r["text"])
     return {
         "id": resource_id,
         "title": r["title"],
         # "uri" deliberately omitted - the live-source link goes through
         # /go/{resource_id} server-side (see go_to_live_source) so the raw
         # external URL string never has to appear in client-facing HTML.
-        "text": r["text"],
+        "text": clean_text,
+        # How many leading characters were removed, so the client can shift
+        # a citation's paragraph offsets (computed against the raw ingested
+        # text) onto this trimmed text before slicing/highlighting.
+        "trim_offset": trim_offset,
         "hook": copy.get("hook", ""),
         "category": copy.get("category", ""),
         "chips": copy.get("chips", []),

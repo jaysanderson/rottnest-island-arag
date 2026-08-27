@@ -59,15 +59,31 @@
     document.getElementById('rw-src-live-link').href = '/go/' + rid;
     document.getElementById('rw-src-chips').innerHTML = (data.chips||[]).map(c => `<span class="rw-chip">${c}</span>`).join('');
 
+    // The server already stripped the shared site-nav boilerplate (skip
+    // link, alert banner, mega menu) from `raw` - `trim_offset` is how many
+    // characters were removed, so the citation's own offsets (computed
+    // against the untrimmed page) need shifting onto this shorter text.
     const raw = data.text || '';
+    const trimOffset = data.trim_offset || 0;
     // paragraphId shape: "<resourceId>/u/link/<start>-<end>" - render the
     // real extracted text through the same markdown renderer as every other
     // answer surface (gate 8), splitting only at the citation's own
     // character offsets so the exact grounded passage can be marked (B23).
     const m = paragraphId.match(/\/(\d+)-(\d+)$/);
+    let start = -1, end = -1;
+    if (m) {
+      start = parseInt(m[1], 10) - trimOffset;
+      end = parseInt(m[2], 10) - trimOffset;
+    }
+    // The label must never claim a highlight that isn't genuinely there
+    // (real defect, 27 Aug 2026: a citation whose cited passage fell INSIDE
+    // the boilerplate that's now stripped showed the "highlighted below"
+    // label over unmarked, sometimes-junk content). Only render the
+    // highlight - and only show the label - when the shifted range is
+    // valid, in bounds, and resolves to real, non-blank text.
+    const validRange = m && start >= 0 && end > start && end <= raw.length && raw.slice(start, end).trim().length > 0;
     let bodyHtml;
-    if (m && parseInt(m[2], 10) <= raw.length) {
-      const start = parseInt(m[1], 10), end = parseInt(m[2], 10);
+    if (validRange) {
       bodyHtml = RWAsk.renderMarkdown(raw.slice(0, start), { plainLinks: true })
         + '<div class="rw-highlight" id="rw-hl">' + RWAsk.renderMarkdown(raw.slice(start, end), { plainLinks: true }) + '</div>'
         + RWAsk.renderMarkdown(raw.slice(end), { plainLinks: true });
@@ -77,7 +93,7 @@
     }
     document.getElementById('rw-src-body').innerHTML = bodyHtml;
     const hl = document.getElementById('rw-hl');
-    if (hl) setTimeout(() => hl.scrollIntoView({behavior:'smooth', block:'center'}), 300);
+    if (hl) hl.scrollIntoView({behavior:'auto', block:'start'});
   }).catch(() => {
     document.getElementById('rw-src-title').textContent = 'Page not found';
     document.getElementById('rw-src-body').textContent = 'This source could not be loaded.';
