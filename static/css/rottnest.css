@@ -199,20 +199,23 @@ a.rw-link-plain { color: inherit; text-decoration: none; }
 .rw-nav-links a.rw-cta:hover { background: #ffc85c; }
 .rw-nav-toggle { display: none; }
 
+/* Base rule (not just inside the media query) so the mobile menu never
+   affects desktop layout regardless of viewport-crossing timing. */
+.rw-mobile-menu {
+  position: fixed;
+  inset: 0;
+  top: calc(var(--progress-header-h, 56px) + 64px);
+  background: var(--rw-sand);
+  z-index: 60;
+  display: none;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+}
+
 @media (max-width: 900px) {
   .rw-nav-links-desktop { display: none; }
   .rw-nav-toggle { display: flex; background: none; border: none; cursor: pointer; padding: 8px; color: var(--rw-navy); }
-  .rw-mobile-menu {
-    position: fixed;
-    inset: 0;
-    top: calc(var(--progress-header-h, 56px) + 64px);
-    background: var(--rw-sand);
-    z-index: 60;
-    display: none;
-    flex-direction: column;
-    padding: 20px;
-    overflow-y: auto;
-  }
   .rw-mobile-menu.rw-open { display: flex; }
   .rw-mobile-menu a {
     font-family: var(--rw-font-display);

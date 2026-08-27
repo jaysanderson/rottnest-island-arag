@@ -1757,5 +1757,621 @@
       "historical insights",
       "reconciliation efforts"
     ]
+  },
+  "bc76c442c2ab4523ac1342afef70e33d": {
+    "hook": "Discover Rottnest Island's autumn charm with fewer crowds.",
+    "highlights": [
+      "Mild temperatures",
+      "Spectacular sunsets",
+      "Wildlife encounters"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "fewer crowds",
+      "wildlife spotting",
+      "sunset views"
+    ]
+  },
+  "bc9e558f40a3463f91a5b26f36002a85": {
+    "hook": "Discover everything you need for a perfect Rottnest Island visit.",
+    "highlights": [
+      "Emergency services info",
+      "Island amenities guide",
+      "Visitor Centre details"
+    ],
+    "category": "Practical Info",
+    "chips": [
+      "emergency contacts",
+      "amenities guide",
+      "Visitor Centre",
+      "accessibility info"
+    ]
+  },
+  "bd2d92c78af74f00b5fe9d09485b1595": {
+    "hook": "Unlock the secrets of Rottnest Island with expert guides and tips.",
+    "highlights": [
+      "Quokka Birthday Weekend",
+      "Connect to Kambarang",
+      "Kids Travel Free deals"
+    ],
+    "category": "Practical Info",
+    "chips": [
+      "family-friendly",
+      "free events",
+      "travel discounts"
+    ]
+  },
+  "bf952dd0f6c94b4e85faabfccf4f8680": {
+    "hook": "Sleep under the stars at Rottnest Island's campground.",
+    "highlights": [
+      "43 non-powered campsites",
+      "Close to Pinky Beach",
+      "Communal camp kitchen"
+    ],
+    "category": "Accommodation",
+    "chips": [
+      "nature retreat",
+      "family-friendly",
+      "wheelchair accessible",
+      "beach nearby"
+    ]
+  },
+  "bfc53a3e98d44478b9ad9ae670e1fbce": {
+    "hook": "Transform any occasion into a memorable celebration on Rottnest Island.",
+    "highlights": [
+      "Late-night return ferry",
+      "Scenic flights",
+      "Luxury seafood cruise"
+    ],
+    "category": "Culture & History",
+    "chips": [
+      "romantic escape",
+      "group celebrations",
+      "unique experiences"
+    ]
+  },
+  "c129b9d9cca4413cbb68d84d5127dafe": {
+    "hook": "Explore Rottnest Island's mooring options today!",
+    "highlights": [
+      "Thomson Bay moorings",
+      "Max stay 180 days",
+      "Vessel size limits"
+    ],
+    "category": "Practical Info",
+    "chips": [
+      "bookable moorings",
+      "vessel size limits",
+      "max stay 180 days"
+    ]
+  },
+  "c64e1979d96a46609439ef0e3453264a": {
+    "hook": "Join the mission to protect Rottnest's unique wildlife.",
+    "highlights": [
+      "Class A Reserve protection",
+      "Quokka conservation hero",
+      "Report sick birds"
+    ],
+    "category": "Wildlife & Nature",
+    "chips": [
+      "wildlife protection",
+      "no feeding",
+      "report sick birds"
+    ]
+  },
+  "c6e2962a88e14935b3e75f2029086fc2": {
+    "hook": "Dive into Rottnest Island's unforgettable aquatic world.",
+    "highlights": [
+      "Crystal-clear waters",
+      "Tropical fish and stingrays",
+      "Snorkelling at Parker Point"
+    ],
+    "category": "Beach & Water",
+    "chips": [
+      "snorkelling spots",
+      "family-friendly",
+      "boat tours",
+      "surfing breaks"
+    ]
+  },
+  "c70cb0c08d84442bb182ebc8ea577a3a": {
+    "hook": "Experience Rottnest Island from the sky!",
+    "highlights": [
+      "Scenic flights available",
+      "Daily departures",
+      "Unique aerial views"
+    ],
+    "category": "Getting Here & Around",
+    "chips": [
+      "scenic flights",
+      "daily departures",
+      "helicopter transfers"
+    ]
+  },
+  "c7c20d28f46d443785f195dfdfc30fc0": {
+    "hook": "Discover tranquility at City of York Bay.",
+    "highlights": [
+      "Secluded northwest coast",
+      "Resident osprey population",
+      "Picnic under shady trees"
+    ],
+    "category": "Beach & Water",
+    "chips": [
+      "family-friendly",
+      "picnic spot",
+      "bike accessible",
+      "wildlife watching"
+    ]
+  },
+  "c8d9f51a1a3a45d8ba7c0b7751d91520": {
+    "hook": "Discover Rottnest Island's stunning beaches and iconic quokkas in one day.",
+    "highlights": [
+      "Turquoise beaches",
+      "Scenic cycling",
+      "Quokka spotting"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "ferry ride",
+      "snorkelling spots",
+      "bike hire"
+    ]
+  },
+  "c950cf3f83b444dd8b6cbefa91aa63b0": {
+    "hook": "Discover Rottnest Island's winter wonders.",
+    "highlights": [
+      "Cycle to West End",
+      "Whale watching",
+      "Snorkel in calm waters"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "eco e-bike tours",
+      "whale migration",
+      "snorkelling spots"
+    ]
+  },
+  "ca2b9298de65492c8284464ff5c014b3": {
+    "hook": "Pedal your way to adventure on Rottnest Island!",
+    "highlights": [
+      "22 km of cycle paths",
+      "Electric bike tours available",
+      "Bike hire options"
+    ],
+    "category": "Cycling & Walking Trails",
+    "chips": [
+      "family-friendly",
+      "electric bike tours",
+      "bike hire available"
+    ]
+  },
+  "ca32b1b8d2f74be5b35032662c1e53fa": {
+    "hook": "Discover the hidden treasures of Henrietta Rocks.",
+    "highlights": [
+      "Snorkel the Shark wreck",
+      "Stunning coral reef",
+      "Secluded beach spot"
+    ],
+    "category": "Beach & Water",
+    "chips": [
+      "snorkelling",
+      "shipwreck",
+      "secluded spot"
+    ]
+  },
+  "cc32d94a9c7941a8a3194ba20ad9637d": {
+    "hook": "Discover 63 stunning beaches on Rottnest Island.",
+    "highlights": [
+      "Iconic Bathurst Lighthouse views",
+      "Snorkel at Parker Point",
+      "Explore shipwrecks at Henrietta Rocks"
+    ],
+    "category": "Beach & Water",
+    "chips": [
+      "snorkelling spots",
+      "family-friendly beaches",
+      "bike access",
+      "scenic views"
+    ]
+  },
+  "cedd428696c44a4497bd75b8af4cc6a6": {
+    "hook": "Explore Wadjemup's rich Aboriginal heritage with Walter McGuire.",
+    "highlights": [
+      "Go Cultural tours",
+      "Smoking ceremony",
+      "Aboriginal prison history"
+    ],
+    "category": "Culture & History",
+    "chips": [
+      "guided tours",
+      "Aboriginal heritage",
+      "smoking ceremony"
+    ]
+  },
+  "d233bf31a22f4104892cc590b5a85f3b": {
+    "hook": "Dive into Rottnest Island's maritime history with over 13 shipwrecks.",
+    "highlights": [
+      "Snorkel at Shark wreck",
+      "Explore plaques on land",
+      "Visit Wadjemup Museum"
+    ],
+    "category": "Culture & History",
+    "chips": [
+      "snorkelling spots",
+      "museum visit",
+      "historical plaques"
+    ]
+  },
+  "d33dcfb8b58e4f489eeaa62ce315d617": {
+    "hook": "Discover thrilling winter ocean adventures on Rottnest Island.",
+    "highlights": [
+      "Snorkelling at The Basin",
+      "Surfing at Strickland Bay",
+      "Coastal walks with whale watching"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "winter activities",
+      "ocean adventures",
+      "surfing spots"
+    ]
+  },
+  "d57c192043fe43a1863ee872332f6f31": {
+    "hook": "Experience spring's vibrant beauty on Rottnest Island.",
+    "highlights": [
+      "Wildflower walks",
+      "Quokka joey spotting",
+      "Whale watching"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "family-friendly",
+      "nature walks",
+      "wildlife spotting"
+    ]
+  },
+  "d62585991e82434287abe911e9ceedb2": {
+    "hook": "Discover cosy winter retreats on Wadjemup.",
+    "highlights": [
+      "Luxe lakeside rooms",
+      "Eco-friendly glamping",
+      "Affordable hostels"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "romantic escape",
+      "family-friendly",
+      "eco-sustainable",
+      "budget options"
+    ]
+  },
+  "d7a1ad67b27c45678fa1497207b63a84": {
+    "hook": "Dive into Rottnest Island's vibrant marine world!",
+    "highlights": [
+      "63 pristine beaches",
+      "Thriving coral reefs",
+      "Spot migrating whales"
+    ],
+    "category": "Wildlife & Nature",
+    "chips": [
+      "snorkelling",
+      "whale watching",
+      "seal colony",
+      "guided tours"
+    ]
+  },
+  "d975c85e03eb45f0b8553bcafcc5a6d9": {
+    "hook": "Serve in stunning island surrounds at Rottnest.",
+    "highlights": [
+      "Free outdoor courts",
+      "Nearby stunning bays",
+      "Try pickleball"
+    ],
+    "category": "Cycling & Walking Trails",
+    "chips": [
+      "free entry",
+      "equipment hire",
+      "family-friendly"
+    ]
+  },
+  "db49a68b877a406aa8c9eb6100cdee55": {
+    "hook": "Dive into Rottnest's aquatic wonderland!",
+    "highlights": [
+      "Thrilling boat tours",
+      "Sunset sail experiences",
+      "Snorkelling with marine biologists"
+    ],
+    "category": "Beach & Water",
+    "chips": [
+      "boat tours",
+      "snorkelling spots",
+      "sunset sail"
+    ]
+  },
+  "df125e54809a4d3e9323588b1245ad2f": {
+    "hook": "Discover the serene beauty of Rottnest Island in winter.",
+    "highlights": [
+      "Cosy coastal dining",
+      "Thriving wildlife",
+      "Rugged scenery"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "romantic escape",
+      "wildlife watching",
+      "cosy dining"
+    ]
+  },
+  "df2327e5b3d14510b37430cd73272928": {
+    "hook": "Explore Rottnest Island's seasonal school holiday programs.",
+    "highlights": [
+      "Free family-friendly activities",
+      "Iconic quokka encounters",
+      "Hands-on cultural experiences"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "family-friendly",
+      "free activities",
+      "cultural experiences"
+    ]
+  },
+  "e09393c3e25341d3bb946c4b67949a8a": {
+    "hook": "Dive into summer fun at Rottnest Island!",
+    "highlights": [
+      "Family-friendly activities",
+      "Cycling adventures",
+      "Ocean swims"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "family-friendly",
+      "bookings essential",
+      "beachside fun"
+    ]
+  },
+  "e2ce7df1c3de484ebdb441606f52a866": {
+    "hook": "Explore Rottnest Island's diverse ecosystems and wildlife.",
+    "highlights": [
+      "Six unique ecosystems",
+      "Protected quokka population",
+      "Marine Sanctuary Zones"
+    ],
+    "category": "Wildlife & Nature",
+    "chips": [
+      "biodiverse environment",
+      "quokka safety",
+      "birdwatching hotspots",
+      "marine life"
+    ]
+  },
+  "e5127d42daf9493d9f8cb4b716c15e4b": {
+    "hook": "Explore Rottnest's stunning landscapes by bike!",
+    "highlights": [
+      "10 km scenic loop",
+      "Historic Wadjemup Lighthouse",
+      "Snorkel at Parker Point"
+    ],
+    "category": "Cycling & Walking Trails",
+    "chips": [
+      "scenic cycling",
+      "snorkelling spots",
+      "historic sites"
+    ]
+  },
+  "e7c77f0b4d4c44f1bba25d5c9ff37e05": {
+    "hook": "Discover the rich and complex history of Wadjemup.",
+    "highlights": [
+      "Aboriginal cultural significance",
+      "Military and maritime links",
+      "Unique native wildlife"
+    ],
+    "category": "Culture & History",
+    "chips": [
+      "family-friendly",
+      "free entry",
+      "educational"
+    ]
+  },
+  "e9d23013b20f46398c03ff6cce5fd974": {
+    "hook": "Discover Rottnest Island's winter magic on a rainy day.",
+    "highlights": [
+      "Guided hikes in rain",
+      "Historic train tours",
+      "Indoor movie experiences"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "rainy day activities",
+      "guided hikes",
+      "indoor attractions"
+    ]
+  },
+  "eccc7687357940a38691cf77c280b317": {
+    "hook": "Discover essential luggage tips for your Rottnest adventure!",
+    "highlights": [
+      "Size and weight restrictions",
+      "Luggage delivery options",
+      "Equipment transfer details"
+    ],
+    "category": "Getting Here & Around",
+    "chips": [
+      "luggage restrictions",
+      "equipment transfer",
+      "ferry travel",
+      "Visitor Centre labels"
+    ]
+  },
+  "ee2414c21f554b96b1011761e8305467": {
+    "hook": "Discover the thrill of fishing on Rottnest Island's stunning shores.",
+    "highlights": [
+      "Secluded bays and beaches",
+      "Family-friendly jetties",
+      "Catch squid, snapper, salmon"
+    ],
+    "category": "Beach & Water",
+    "chips": [
+      "family-friendly",
+      "easy access",
+      "gear available",
+      "marine sanctuaries"
+    ]
+  },
+  "ef6379440421476b8edf703ddd04b779": {
+    "hook": "Discover Wadjemup's stunning beaches and rich history.",
+    "highlights": [
+      "63 beautiful beaches",
+      "135 tropical fish species",
+      "45 km walking trails"
+    ],
+    "category": "Culture & History",
+    "chips": [
+      "snorkelling paradise",
+      "cycling trails",
+      "marine sanctuary"
+    ]
+  },
+  "f29581206c704f3a9050746ac9437957": {
+    "hook": "Spot seals and sea lions in the wild at Rottnest Island.",
+    "highlights": [
+      "Cathedral Rocks viewing platform",
+      "Eco Express Boat Tours",
+      "Protected marine sanctuary zones"
+    ],
+    "category": "Wildlife & Nature",
+    "chips": [
+      "wildlife encounters",
+      "boat tours",
+      "viewing platform",
+      "protected zones"
+    ]
+  },
+  "f46be2ad724e401f88f19cab9f99a721": {
+    "hook": "Explore Rottnest Island's winter wonders together!",
+    "highlights": [
+      "Guided tours available",
+      "Unique winter wildlife",
+      "Cultural experiences"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "guided tours",
+      "wildlife sightings",
+      "cultural insights"
+    ]
+  },
+  "f52815a287144473b597d67b6de4a814": {
+    "hook": "Experience romantic winter nights on Rottnest Island.",
+    "highlights": [
+      "Stargazing at Vlamingh Lookout",
+      "Cosy dining experiences",
+      "Sunset at Bathurst Lighthouse"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "romantic escape",
+      "winter activities",
+      "stargazing spots"
+    ]
+  },
+  "f77351e15ac643caafd44bb7d0c2ae62": {
+    "hook": "Discover 40 unique winter experiences on Wadjemup.",
+    "highlights": [
+      "Quokka joeys in August",
+      "Whale watching from June",
+      "Cosy island nights"
+    ],
+    "category": "Seasonal Guide & Itinerary",
+    "chips": [
+      "wildlife spotting",
+      "cosy accommodation",
+      "winter activities"
+    ]
+  },
+  "f7c0348172584d8ba2debc50d09e9e25": {
+    "hook": "Explore rugged trails and hidden beaches on Karlinyah Bidi.",
+    "highlights": [
+      "Powdery white sand beaches",
+      "Spectacular salt lake views",
+      "Challenging hiking conditions"
+    ],
+    "category": "Cycling & Walking Trails",
+    "chips": [
+      "rugged terrain",
+      "hiking experience",
+      "water refill points"
+    ]
+  },
+  "f7cafff9b03f4761b012faa2aba69db8": {
+    "hook": "Climb to the top of Wadjemup Lighthouse for breathtaking views.",
+    "highlights": [
+      "Guided tours available",
+      "360-degree island views",
+      "Historical significance"
+    ],
+    "category": "Culture & History",
+    "chips": [
+      "guided tour",
+      "360-degree views",
+      "historical site"
+    ]
+  },
+  "fa6c862d877b4b6784aae993109ab8d1": {
+    "hook": "Explore Rottnest Island's stunning trails on foot.",
+    "highlights": [
+      "Spectacular coastal headlands",
+      "Inland lakes",
+      "Cultural landmarks"
+    ],
+    "category": "Cycling & Walking Trails",
+    "chips": [
+      "self-guided",
+      "guided tours",
+      "45 km trail",
+      "wildlife spotting"
+    ]
+  },
+  "fb93b38838204f93b140a79f618f5be3": {
+    "hook": "Discover tranquility at Fay's Bay, a hidden gem on Rottnest Island.",
+    "highlights": [
+      "Calm waters, soft white sand",
+      "Beginner-friendly snorkelling",
+      "Sheltered cove"
+    ],
+    "category": "Beach & Water",
+    "chips": [
+      "family-friendly",
+      "snorkelling",
+      "fishing allowed",
+      "no facilities"
+    ]
+  },
+  "ff687f9f7c7240be9b6604927e920695": {
+    "hook": "Dive into Wadjemup's vibrant coral gardens!",
+    "highlights": [
+      "20 coral species",
+      "Accessible snorkelling spots",
+      "Warm Leeuwin Current"
+    ],
+    "category": "Beach & Water",
+    "chips": [
+      "snorkelling spots",
+      "marine sanctuary zones",
+      "guided tours",
+      "gear hire available"
+    ]
+  },
+  "ff69cceb28344db7bad0a56bce550538": {
+    "hook": "Discover world-class surfing at Strickland Bay.",
+    "highlights": [
+      "Heavy A-frame waves",
+      "Stunning ocean views",
+      "Gateway to West End"
+    ],
+    "category": "Beach & Water",
+    "chips": [
+      "Advanced surfers",
+      "No accessible facilities",
+      "High tide surfing"
+    ]
   }
 }
