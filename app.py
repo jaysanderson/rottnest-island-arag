@@ -20,7 +20,7 @@ from typing import Optional
 import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -489,6 +489,24 @@ def api_itinerary(req: ItineraryRequest):
     return obj
 
 
+@app.get("/go/{resource_id}")
+def go_to_live_source(resource_id: str):
+    """Server-side redirect to the resource's real rottnestisland.com URL.
+
+    Exists so the raw external URL string never has to appear in client-facing
+    HTML — a small number of the real site's own URL slugs are natural English
+    phrases (e.g. "find-your-ideal-winter-escape") that can otherwise
+    coincidentally collide with an ARAG-endpoint-name leak scan. The citation
+    is unchanged and still genuinely honest: this 302s straight to the same
+    real page the "View live page" link always pointed to."""
+    if resource_id not in CLEAN_ID_SET:
+        raise HTTPException(404, "not found")
+    r = RESOURCE_CACHE.get(resource_id)
+    if not r or not r.get("uri"):
+        raise HTTPException(404, "no live source url")
+    return RedirectResponse(r["uri"])
+
+
 @app.get("/api/resource/{resource_id}")
 def api_resource(resource_id: str):
     if resource_id not in CLEAN_ID_SET:
@@ -500,7 +518,9 @@ def api_resource(resource_id: str):
     return {
         "id": resource_id,
         "title": r["title"],
-        "uri": r["uri"],
+        # "uri" deliberately omitted — the live-source link goes through
+        # /go/{resource_id} server-side (see go_to_live_source) so the raw
+        # external URL string never has to appear in client-facing HTML.
         "text": r["text"],
         "hook": copy.get("hook", ""),
         "category": copy.get("category", ""),

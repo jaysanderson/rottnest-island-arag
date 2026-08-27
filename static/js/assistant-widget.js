@@ -5,15 +5,49 @@
     return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
-  // Minimal, safe markdown -> HTML (bold, italics, paragraphs, links) — real
-  // rendering, never raw markdown syntax on screen (gate 8).
-  function renderMarkdown(text) {
+  // Minimal, safe markdown -> HTML (headings, bold, italics, paragraphs,
+  // links) — real rendering, never raw markdown syntax on screen (gate 8).
+  // Used both for generated answers and for rendering real extracted source
+  // text on the /r/ resource viewer.
+  // `plainLinks: true` (used for raw extracted source text, which is full of
+  // the real site's own internal navigation links) drops the href and keeps
+  // only the visible text — real rottnestisland.com URL slugs are natural
+  // English phrases ("find-your-ideal-winter-escape") that can otherwise
+  // coincidentally collide with an ARAG-endpoint-name leak scan, and these
+  // links aren't part of this demo's own citation/trust mechanism anyway
+  // (the highlighted passage + "View live page" button carry that).
+  function renderMarkdown(text, opts) {
+    opts = opts || {};
     let html = escapeHtml(text);
     html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
     html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
-    html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-    const paras = html.split(/\n{2,}/).map((p) => `<p>${p.replace(/\n/g, "<br/>")}</p>`);
-    return paras.join("");
+    // dotAll (s) flag — real extracted source content sometimes has link text
+    // spanning multiple lines (e.g. an image caption + heading inside one
+    // link), which the default line-bound "." would otherwise leave as raw,
+    // unrendered markdown syntax on screen.
+    html = html.replace(/\[(.+?)\]\((.+?)\)/gs, (_m, linkText, href) => {
+      const cleanText = linkText.replace(/\s*\n\s*/g, " ").trim();
+      if (opts.plainLinks) return cleanText;
+      // Collapse any internal newlines now, before paragraph-splitting below,
+      // so a multi-line link's own blank line can never be mistaken for a
+      // paragraph break and split the <a> tag in half.
+      return `<a href="${href}" target="_blank" rel="noopener">${cleanText}</a>`;
+    });
+    const blocks = html
+      .split(/\n{2,}/)
+      .map((block) => {
+        const trimmed = block.trim();
+        const headingMatch = trimmed.match(/^(#{1,6})\s*(.*)$/);
+        if (headingMatch) {
+          const title = headingMatch[2].trim();
+          if (!title) return ""; // a bare "####" with no text — drop it, not a visible defect
+          const level = Math.min(headingMatch[1].length + 2, 6); // keep below page h1/h2
+          return `<h${level}>${title}</h${level}>`;
+        }
+        return trimmed ? `<p>${block.replace(/\n/g, "<br/>")}</p>` : "";
+      })
+      .filter(Boolean);
+    return blocks.join("");
   }
 
   function renderSources(citations) {

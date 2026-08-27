@@ -9,7 +9,10 @@
 <link rel="stylesheet" href="/static/css/rottnest.css" />
 <style>
   .rw-source-doc { background: white; border-radius: var(--rw-radius-lg); box-shadow: var(--rw-shadow-card); padding: 36px 40px; max-width: 780px; margin: -50px auto 0; position: relative; z-index: 5; }
-  .rw-source-body { white-space: pre-wrap; font-size: 0.98rem; line-height: 1.75; color: var(--rw-navy); }
+  .rw-source-body { font-size: 0.98rem; line-height: 1.75; color: var(--rw-navy); }
+  .rw-source-body p { margin: 0 0 1em; }
+  .rw-source-body h3, .rw-source-body h4, .rw-source-body h5 { font-family: var(--rw-font-display); text-transform: uppercase; letter-spacing: 0.03em; color: var(--rw-teal-darker); margin: 1.2em 0 0.5em; }
+  .rw-source-body a { color: var(--rw-teal); }
   @media (max-width: 640px) { .rw-source-doc { padding: 22px 20px; } }
 </style>
 </head>
@@ -36,16 +39,13 @@
 
 <script>window.RW_PAGE = { nav: '', revealKey: 'resource' };</script>
 <script src="/static/js/shared.js"></script>
+<script src="/static/js/assistant-widget.js"></script>
 <script>
 (function(){
   const parts = window.location.pathname.split('/').filter(Boolean);
   const rid = parts[1];
   const params = new URLSearchParams(window.location.search);
   const paragraphId = params.get('p') || '';
-
-  function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
 
   fetch('/api/resource/' + rid).then(r => {
     if (!r.ok) throw new Error('not found');
@@ -54,22 +54,24 @@
     document.title = data.title + ' — Wadjemup';
     document.getElementById('rw-src-title').textContent = data.title.replace(' | Rottnest Island','');
     document.getElementById('rw-src-category').textContent = data.category || 'Source page';
-    document.getElementById('rw-src-live-link').href = data.uri || '#';
+    document.getElementById('rw-src-live-link').href = '/go/' + rid;
     document.getElementById('rw-src-chips').innerHTML = (data.chips||[]).map(c => `<span class="rw-chip">${c}</span>`).join('');
 
-    let bodyHtml = escapeHtml(data.text || '');
-    // paragraphId shape: "<resourceId>/u/link/<start>-<end>"
+    const raw = data.text || '';
+    // paragraphId shape: "<resourceId>/u/link/<start>-<end>" — render the
+    // real extracted text through the same markdown renderer as every other
+    // answer surface (gate 8), splitting only at the citation's own
+    // character offsets so the exact grounded passage can be marked (B23).
     const m = paragraphId.match(/\/(\d+)-(\d+)$/);
-    if (m) {
+    let bodyHtml;
+    if (m && parseInt(m[2], 10) <= raw.length) {
       const start = parseInt(m[1], 10), end = parseInt(m[2], 10);
-      const raw = data.text || '';
-      if (end <= raw.length) {
-        const before = escapeHtml(raw.slice(0, start));
-        const mid = escapeHtml(raw.slice(start, end));
-        const after = escapeHtml(raw.slice(end));
-        bodyHtml = before + '<mark class="rw-highlight" id="rw-hl">' + mid + '</mark>' + after;
-        document.getElementById('rw-src-highlight-note').style.display = 'inline-flex';
-      }
+      bodyHtml = RWAsk.renderMarkdown(raw.slice(0, start), { plainLinks: true })
+        + '<mark class="rw-highlight" id="rw-hl">' + RWAsk.renderMarkdown(raw.slice(start, end), { plainLinks: true }) + '</mark>'
+        + RWAsk.renderMarkdown(raw.slice(end), { plainLinks: true });
+      document.getElementById('rw-src-highlight-note').style.display = 'inline-flex';
+    } else {
+      bodyHtml = RWAsk.renderMarkdown(raw, { plainLinks: true });
     }
     document.getElementById('rw-src-body').innerHTML = bodyHtml;
     const hl = document.getElementById('rw-hl');
