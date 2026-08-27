@@ -56,6 +56,40 @@ CLEAN_IDS = [r["id"] for r in ALL_RESOURCES]
 CLEAN_ID_SET = set(CLEAN_IDS)
 RESOURCE_CACHE = json.loads((DATA_DIR / "resource_cache.json").read_text())
 
+# ---- Utility/nav/legal page exclusion — ONE shared list the whole app uses
+# (GM revision, 27 Aug 2026: real defect — nav/utility/legal pages like
+# "Sitemap", "Contact Us", "Trade Information" and admin sub-FAQ pages were
+# legitimately retrievable (not junk/duplicates, just not tourist content)
+# and surfaced as citations, chat follow-up questions, and catalogue items.
+# Declared explicitly here rather than trusting a live facet/label query —
+# same discipline as the junk/duplicate exclusion, for the same reason
+# (CLAUDE.md's cross-tenant + relevance lesson: never trust a live facet
+# response alone to define what belongs in a customer-facing surface).
+# Applied to every retrieval call and every listing surface: itinerary,
+# assistant, persona re-rank, chat suggestions, and the /stay + /deals
+# catalogues. A few adjacent pages were deliberately KEPT because they are
+# genuine tourist content despite living in a similar part of the site
+# (Emergency Services - visitor safety info; Location - the island's own
+# geography under /learn/location, not a corporate address page; the main
+# Overnight Camp Subsidy program + its general FAQ page - a real, valuable
+# tourist deal, just not its narrow admin sub-FAQ/T&C pages).
+UTILITY_EXCLUDE_IDS = {
+    "2c8de86b8c85424ca2dc471a415be034",  # Disclaimer
+    "44c7fb3695704ba7941be48b77199dee",  # Sitemap
+    "6897324821f94197ad67bab37c6024e4",  # Trade Information
+    "6fa58f0dba5749a8aa2d0175f4640519",  # Privacy
+    "7ac12c59e5d947f498ef165e13a2c006",  # Contact Us
+    "7b6cb120e72f4bdf9f295dda66fdafbd",  # Copyright
+    "83118b910556469c8bfbf2a8274f5af9",  # Subscribe to our Newsletter
+    "42a850c2e6874e13baad7a75d407801d",  # Overnight Camp Subsidy | Ferry Transfer FAQ
+    "69f2ef561e144d049e4f4aea61280373",  # Overnight Camp Subsidy | Bike Hire FAQ
+    "7c06b5f630424202ae860d8c06c26046",  # Overnight Camp Subsidy | Accommodation FAQ
+    "b01ffd8c969444d1a3843874cf69f36f",  # Overnight Camp Subsidy Terms & Conditions
+    "b119b000b0444186ab74da5bc1b91bb0",  # Overnight Camp Subsidy | Educational Tours FAQ
+}
+CUSTOMER_FACING_IDS = [rid for rid in CLEAN_IDS if rid not in UTILITY_EXCLUDE_IDS]
+CUSTOMER_FACING_ID_SET = set(CUSTOMER_FACING_IDS)
+
 
 def _load_catalog_copy():
     p = DATA_DIR / "catalog_copy.json"
@@ -284,7 +318,7 @@ def _parse_ask_ndjson(text: str):
     citation_list = []
     for para_id in citations_raw.keys():
         rid = para_id.split("/")[0]
-        if rid not in CLEAN_ID_SET:
+        if rid not in CUSTOMER_FACING_ID_SET:
             continue
         if rid in seen_resource_ids:
             continue
@@ -343,7 +377,7 @@ def api_ask(req: AskRequest):
         "query": req.query + _language_directive(req.lang),
         "citations": True,
         "show": ["basic"],
-        "resource_filters": CLEAN_IDS,
+        "resource_filters": CUSTOMER_FACING_IDS,
         "search_configuration": SEARCH_CONFIG,
     }
     if req.history:
@@ -363,6 +397,74 @@ def api_ask(req: AskRequest):
     return parsed
 
 
+class SuggestionsRequest(BaseModel):
+    history: list[ChatTurn] = []
+    lang: str = "en"
+
+
+@app.post("/api/suggestions")
+def api_suggestions(req: SuggestionsRequest):
+    """Genuine follow-up QUESTIONS for the chat widget (GM revision, 27 Aug
+    2026 — real defect: the widget's only "suggestion"-shaped surface was the
+    citation source tiles, so a viewer saw raw KB page titles like "Sitemap"
+    and "Trade Information" as if they were suggested next questions, and
+    clicking one just opened that source page instead of asking anything).
+    This is a genuinely separate ARAG mechanism from citations: a structured
+    /ask + answer_json_schema call, grounded in the conversation so far and
+    scoped to the customer-facing allow-list, asking the model for real
+    tourist-phrased follow-up questions — never a raw resource-title dump."""
+    if not req.history:
+        return {"questions": []}
+    transcript = "\n".join(
+        f"{'Visitor' if t.author == 'USER' else 'Concierge'}: {t.text[:500]}"
+        for t in req.history[-6:]
+        if t.author in ("USER", "NUCLIA") and t.text
+    )
+    schema = {
+        "name": "follow_up_questions",
+        "description": "Natural follow-up questions a tourist would genuinely want to ask next in this conversation.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "questions": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 3,
+                    "maxItems": 3,
+                }
+            },
+            "required": ["questions"],
+        },
+    }
+    query = (
+        "Here is a conversation between a Rottnest Island visitor and the "
+        "island's concierge:\n\n"
+        f"{transcript}\n\n"
+        "Suggest 3 short, natural follow-up questions THE VISITOR might "
+        "genuinely ask next, phrased as real questions a tourist would type "
+        "(not a page title, not a topic label). They should be specific and "
+        "directly relevant to what was just discussed, answerable from real "
+        "island content." + _language_directive(req.lang)
+    )
+    payload = {
+        "query": query,
+        "answer_json_schema": schema,
+        "citations": False,
+        "show": ["basic"],
+        "resource_filters": CUSTOMER_FACING_IDS,
+        "search_configuration": SEARCH_CONFIG,
+    }
+    try:
+        r = _client.post(f"{KB_URL}/ask", headers=_headers(), json=payload)
+        r.raise_for_status()
+    except httpx.HTTPError:
+        return {"questions": []}  # best-effort — never block the chat on this
+    parsed = _parse_ask_ndjson(r.text)
+    obj = parsed.get("answer_json") or {}
+    questions = [q for q in obj.get("questions", []) if isinstance(q, str) and q.strip()]
+    return {"questions": questions[:3]}
+
+
 class SeeDoRequest(BaseModel):
     persona: str
 
@@ -378,7 +480,7 @@ def api_see_do(req: SeeDoRequest):
         "query": query,
         "features": ["keyword", "semantic"],
         "top_k": 12,
-        "resource_filters": CLEAN_IDS,
+        "resource_filters": CUSTOMER_FACING_IDS,
     }
     try:
         r = _client.post(f"{KB_URL}/find", headers=_headers(), json=payload)
@@ -388,7 +490,7 @@ def api_see_do(req: SeeDoRequest):
     data = r.json()
     items = []
     for rid, res in data.get("resources", {}).items():
-        if rid not in CLEAN_ID_SET:
+        if rid not in CUSTOMER_FACING_ID_SET:
             continue
         best_score = 0.0
         for field in res.get("fields", {}).values():
@@ -449,7 +551,7 @@ def api_itinerary(req: ItineraryRequest):
         "query": base_query,
         "features": ["keyword", "semantic"],
         "top_k": 16,
-        "resource_filters": CLEAN_IDS,
+        "resource_filters": CUSTOMER_FACING_IDS,
     }
     try:
         fr = _client.post(f"{KB_URL}/find", headers=_headers(), json=find_payload)
@@ -468,7 +570,7 @@ def api_itinerary(req: ItineraryRequest):
     # clicking one opened the page with nothing highlighted).
     best_paragraph_id = {}
     for rid, res in find_data.get("resources", {}).items():
-        if rid not in CLEAN_ID_SET:
+        if rid not in CUSTOMER_FACING_ID_SET:
             continue
         title = res.get("title", "")
         if title and title not in candidate_titles:
@@ -576,7 +678,7 @@ def api_itinerary(req: ItineraryRequest):
         "answer_json_schema": schema,
         "citations": False,
         "show": ["basic"],
-        "resource_filters": CLEAN_IDS,
+        "resource_filters": CUSTOMER_FACING_IDS,
         "search_configuration": SEARCH_CONFIG,
     }
     try:
@@ -666,6 +768,8 @@ def api_catalog(category: Optional[str] = None, q: Optional[str] = None, limit: 
     at arbitrary corpus size (never hardcoded to the 166 seeded items)."""
     items = []
     for rid, r in RESOURCE_CACHE.items():
+        if rid not in CUSTOMER_FACING_ID_SET:
+            continue
         copy = CATALOG_COPY.get(rid, {})
         cat = copy.get("category", "")
         if category and cat != category:
@@ -720,7 +824,13 @@ def api_voice(req: VoiceRequest):
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "kb": KB_URL, "clean_resources": len(CLEAN_IDS), "catalog_copy": len(CATALOG_COPY)}
+    return {
+        "ok": True,
+        "kb": KB_URL,
+        "clean_resources": len(CLEAN_IDS),
+        "customer_facing_resources": len(CUSTOMER_FACING_IDS),
+        "catalog_copy": len(CATALOG_COPY),
+    }
 
 
 # ---- Static frontend --------------------------------------------------------

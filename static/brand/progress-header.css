@@ -72,10 +72,19 @@
   border-radius: 16px;
   max-width: 760px;
   width: 100%;
+  /* The MODAL itself scrolls (not just the overlay behind it) so its own
+     header can be position:sticky against it — real defect found live on
+     mobile, 27 Aug 2026: a ~1168px-tall modal in an 844px viewport scrolled
+     the close-X out of reach entirely, with only click-outside left to
+     close it. */
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
   box-shadow: 0 30px 80px -20px rgba(0,0,0,0.5);
-  overflow: hidden;
 }
 .arag-reveal-head {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   background: var(--arag-blue-p1);
   color: white;
   padding: 22px 28px;

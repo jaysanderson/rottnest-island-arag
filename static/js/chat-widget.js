@@ -18,7 +18,18 @@
 (function () {
   const HISTORY_KEY = "rw_chat_history";
   const OPEN_KEY = "rw_chat_open";
+  const AUTOREAD_KEY = "rw_chat_autoread";
   const MAX_HISTORY = 12;
+
+  // Starter follow-up questions shown before any real conversation exists
+  // (can't call /api/suggestions yet — no history to ground it in). Real,
+  // AI-generated suggestions take over from the first answer onward.
+  const STARTER_QUESTIONS = {
+    en: ["Where can I see quokkas?", "What's the best beach for snorkelling?", "How do I get to the island?"],
+    zh: ["在哪里可以看到短尾矮袋鼠？", "哪个海滩最适合浮潜？", "怎样才能到岛上？"],
+    ja: ["クオッカはどこで見られますか？", "シュノーケリングに最適なビーチはどこですか？", "島へはどうやって行きますか？"],
+    fr: ["Où puis-je voir des quokkas ?", "Quelle est la meilleure plage pour faire du snorkeling ?", "Comment se rendre sur l'île ?"],
+  };
 
   // A friendly, on-brand line-art quokka face — same teal/navy/gold
   // linework as the rest of the site's decorative motifs, not clip-art.
@@ -80,6 +91,7 @@
         </div>
         <div class="rw-chat-head-actions">
           <div id="rw-chat-lang-mount"></div>
+          <button id="rw-chat-listen-toggle" class="rw-chat-icon-btn" title="Auto-read answers aloud" type="button" aria-pressed="false">🔊</button>
           <button id="rw-chat-reset" class="rw-chat-icon-btn" title="Reset conversation" type="button">↺</button>
           <button id="rw-chat-close" class="rw-chat-icon-btn" title="Close" type="button">✕</button>
         </div>
@@ -91,6 +103,7 @@
       </div>
     </div>
   `);
+  const sharedAudio = new Audio();
 
   document.body.appendChild(fab);
   document.body.appendChild(panel);
@@ -145,14 +158,24 @@
     },
   };
 
-  function updateConciergeName() {
+  function updateConciergeChrome() {
     const name = RWLang.getConciergeName(RWLang.getLang());
     document.getElementById("rw-chat-name").textContent = name;
     document.getElementById("rw-chat-fab-label").textContent = "Ask " + name;
     panel.setAttribute("aria-label", "Chat with " + name + ", the Wadjemup concierge");
-    // Re-render the welcome message in the new language too, but only while
-    // the conversation is still empty — never rewrite real transcript turns.
-    if (!history.length) renderEmptyState();
+  }
+
+  // Genuine user-triggered language SWITCH (wired to RWLang.onChange below,
+  // which only fires on the dropdown's own `change` event — never on the
+  // initial programmatic mount) always restarts the conversation clean in
+  // the new language (GM revision, 27 Aug 2026: a stale prior-language
+  // welcome message was found sitting above an answer in the new language —
+  // switching language must never leave anything stale behind).
+  function onLanguageSwitch() {
+    updateConciergeChrome();
+    history = [];
+    saveHistory(history);
+    renderHistory();
   }
 
   function renderEmptyState() {
@@ -160,11 +183,67 @@
     const lang = RWLang.getLang();
     const name = RWLang.getConciergeName(lang);
     const w = WELCOME[lang] || WELCOME.en;
+    const starters = STARTER_QUESTIONS[lang] || STARTER_QUESTIONS.en;
     messages.innerHTML = `
       <div class="rw-chat-welcome">
         <p><strong>${w.greeting(name)}</strong> ${w.body}</p>
         <p class="rw-chat-welcome-sub">${w.sub}</p>
+      </div>
+      <div class="rw-chat-suggestions" id="rw-chat-suggestions">
+        ${starters.map((q) => `<button class="rw-chat-suggestion-chip" type="button">${RWAsk.escapeHtml(q)}</button>`).join("")}
       </div>`;
+    wireSuggestionChips();
+  }
+
+  function wireSuggestionChips() {
+    const wrap = document.getElementById("rw-chat-suggestions");
+    if (!wrap) return;
+    wrap.querySelectorAll(".rw-chat-suggestion-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.getElementById("rw-chat-input").value = btn.textContent;
+        send();
+      });
+    });
+  }
+
+  async function renderLiveSuggestions() {
+    const messages = document.getElementById("rw-chat-messages");
+    const existing = document.getElementById("rw-chat-suggestions");
+    if (existing) existing.remove();
+    const existingLoading = document.getElementById("rw-chat-suggestions-loading");
+    if (existingLoading) existingLoading.remove();
+    // This is a second, sequential ARAG call (grounded in the answer just
+    // given) — a brief skeleton keeps it from reading as "nothing happening"
+    // during that gap rather than a silent multi-second wait.
+    const loadingEl = el(`<div class="rw-chat-suggestions-loading" id="rw-chat-suggestions-loading"><span class="rw-skeleton" style="height:30px;width:70%;display:block;"></span></div>`);
+    messages.appendChild(loadingEl);
+    scrollToBottom();
+    try {
+      const priorTurns = history.map((t) => ({ author: t.author, text: t.text }));
+      const res = await fetch("/api/suggestions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ history: priorTurns, lang: RWLang.getLang() }),
+      });
+      const data = await res.json();
+      const questions = data.questions || [];
+      loadingEl.remove();
+      if (!questions.length) return;
+      // Only attach if the conversation hasn't moved on while this was
+      // in flight (best-effort, never blocks or races the real answer).
+      if (document.getElementById("rw-chat-suggestions")) return;
+      const wrap = el(
+        `<div class="rw-chat-suggestions" id="rw-chat-suggestions">${questions
+          .map((q) => `<button class="rw-chat-suggestion-chip" type="button">${RWAsk.escapeHtml(q)}</button>`)
+          .join("")}</div>`
+      );
+      messages.appendChild(wrap);
+      wireSuggestionChips();
+      scrollToBottom();
+    } catch (e) {
+      loadingEl.remove();
+      /* best-effort only — a missing suggestion row never blocks the chat */
+    }
   }
 
   function bubbleHtml(turn) {
@@ -196,9 +275,14 @@
     scrollToBottom();
   }
 
+  // Sources only — voice is now the persistent header toggle, not a
+  // per-message button (GM revision, 27 Aug 2026: "Jay couldn't find it" as
+  // a small button under one answer; a clear, always-visible toggle in the
+  // header solves discoverability AND makes every subsequent answer play
+  // automatically, which is what "Listen" is actually for on a voice hero).
   function renderActions(actionsEl, turn) {
     const citations = turn.citations || [];
-    const sourcesHtml = citations.length
+    actionsEl.innerHTML = citations.length
       ? `<div class="rw-chat-sources">${citations
           .slice(0, 4)
           .map(
@@ -207,40 +291,40 @@
           )
           .join("")}</div>`
       : "";
-    actionsEl.innerHTML = `
-      <button class="rw-chat-voice-btn" type="button">🔊 Listen</button>
-      ${sourcesHtml}
-    `;
-    const voiceBtn = actionsEl.querySelector(".rw-chat-voice-btn");
-    const audioEl = document.createElement("audio");
-    audioEl.style.display = "none";
-    actionsEl.appendChild(audioEl);
-    voiceBtn.addEventListener("click", async () => {
-      voiceBtn.textContent = "Loading…";
-      voiceBtn.disabled = true;
-      try {
-        const vr = await fetch("/api/voice", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: turn.text, lang: RWLang.getLang() }),
-        });
-        if (!vr.ok) throw new Error("voice failed");
-        const blob = await vr.blob();
-        audioEl.src = URL.createObjectURL(blob);
-        audioEl.play();
-        voiceBtn.textContent = "🔊 Playing…";
-        audioEl.onended = () => {
-          voiceBtn.textContent = "🔊 Listen";
-          voiceBtn.disabled = false;
-        };
-      } catch (e) {
-        voiceBtn.textContent = "Voice unavailable";
-        setTimeout(() => {
-          voiceBtn.textContent = "🔊 Listen";
-          voiceBtn.disabled = false;
-        }, 2000);
-      }
-    });
+  }
+
+  // ---------- Persistent Listen (auto-read) toggle ----------
+  let autoRead = sessionStorage.getItem(AUTOREAD_KEY) === "1";
+
+  function setAutoRead(on) {
+    autoRead = on;
+    try {
+      sessionStorage.setItem(AUTOREAD_KEY, on ? "1" : "0");
+    } catch (e) {
+      /* ignore */
+    }
+    const btn = document.getElementById("rw-chat-listen-toggle");
+    btn.classList.toggle("rw-chat-listen-on", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.title = on ? "Auto-read is ON — every answer plays aloud (tap to turn off)" : "Auto-read answers aloud";
+    if (!on) sharedAudio.pause();
+  }
+
+  async function playVoice(text) {
+    try {
+      sharedAudio.pause();
+      const vr = await fetch("/api/voice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, lang: RWLang.getLang() }),
+      });
+      if (!vr.ok) throw new Error("voice failed");
+      const blob = await vr.blob();
+      sharedAudio.src = URL.createObjectURL(blob);
+      await sharedAudio.play();
+    } catch (e) {
+      /* best-effort — a failed auto-read never blocks the chat */
+    }
   }
 
   async function send() {
@@ -273,6 +357,8 @@
       history.push({ author: "NUCLIA", text: answerText, citations: data.citations || [] });
       saveHistory(history);
       renderHistory();
+      renderLiveSuggestions();
+      if (autoRead) playVoice(answerText);
     } catch (e) {
       typingEl.remove();
       history.push({ author: "NUCLIA", text: "Ah, something went wrong on my end there — give it another go?", citations: [] });
@@ -346,13 +432,23 @@
   document.getElementById("rw-chat-input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") send();
   });
+  document.getElementById("rw-chat-listen-toggle").addEventListener("click", () => setAutoRead(!autoRead));
 
   if (window.RWLang) {
     RWLang.mountDropdown(document.getElementById("rw-chat-lang-mount"), "rw-lang-select rw-lang-select-dark rw-chat-lang-select");
-    RWLang.onChange(updateConciergeName);
-    updateConciergeName();
+    // onLanguageSwitch only fires on the dropdown's own user-triggered
+    // `change` event (never on this initial programmatic setup), so it's
+    // safe to register before the one-off chrome update below.
+    RWLang.onChange(onLanguageSwitch);
+    updateConciergeChrome();
   }
+  setAutoRead(autoRead);
 
   renderHistory();
-  if (sessionStorage.getItem(OPEN_KEY) === "1") setOpen(true);
+  // Never auto-restore the panel OPEN on a /r/ source-viewer page (GM
+  // revision, 27 Aug 2026: on desktop the open panel covered ~50px of the
+  // right edge of the highlighted passage box it exists to lead people to).
+  // The FAB itself still shows, so the conversation is one tap away.
+  const onSourceViewerPage = window.location.pathname.startsWith("/r/");
+  if (!onSourceViewerPage && sessionStorage.getItem(OPEN_KEY) === "1") setOpen(true);
 })();

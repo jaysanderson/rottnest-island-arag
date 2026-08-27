@@ -507,6 +507,33 @@ a.rw-link-plain { color: inherit; text-decoration: none; }
   flex-shrink: 0;
 }
 .rw-chat-icon-btn:hover { background: rgba(255,255,255,0.24); }
+/* Persistent Listen (auto-read) toggle — obvious ON state (GM revision,
+   27 Aug 2026: "make the on/off state obvious"), not a subtle tint. */
+#rw-chat-listen-toggle.rw-chat-listen-on {
+  background: var(--rw-gold);
+  color: var(--rw-ink);
+  box-shadow: 0 0 0 2px rgba(253, 188, 63, 0.4);
+}
+#rw-chat-listen-toggle.rw-chat-listen-on:hover { background: #ffc85c; }
+
+/* Genuine follow-up question chips — distinct from the source-citation
+   chips below an answer, and from raw KB titles (GM revision, 27 Aug 2026:
+   real defect — the only "suggestion"-shaped surface was citation tiles
+   showing raw page titles like "Sitemap"; these are separately generated,
+   tourist-phrased QUESTIONS that submit as the next turn on click). */
+.rw-chat-suggestions { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; align-self: flex-start; max-width: 88%; }
+.rw-chat-suggestion-chip {
+  text-align: left;
+  background: white;
+  border: 1.5px solid var(--rw-teal);
+  color: var(--rw-teal-darker);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.rw-chat-suggestion-chip:hover { background: var(--rw-teal-pale); }
 
 .rw-chat-messages {
   flex: 1;
