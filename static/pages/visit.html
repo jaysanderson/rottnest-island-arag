@@ -45,8 +45,9 @@
 <script src="/static/js/shared.js"></script>
 <script src="/static/js/i18n.js"></script>
 <script src="/static/js/assistant-widget.js"></script>
+<script src="/static/js/chat-widget.js"></script>
 <script>
-  RWAsk.wire('#rw-visit-q', '#rw-visit-ask', '#rw-visit-answer', { getLang: () => 'en' });
+  RWAsk.wire('#rw-visit-q', '#rw-visit-ask', '#rw-visit-answer', { getLang: () => 'en', voice: true });
   document.querySelectorAll('[data-q]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.getElementById('rw-visit-q').value = btn.dataset.q;

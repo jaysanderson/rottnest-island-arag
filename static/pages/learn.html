@@ -47,6 +47,7 @@
 <script src="/static/js/shared.js"></script>
 <script src="/static/js/i18n.js"></script>
 <script src="/static/js/assistant-widget.js"></script>
+<script src="/static/js/chat-widget.js"></script>
 <script>
 (function(){
   const suggestions = {
@@ -64,7 +65,9 @@
       document.getElementById('rw-learn-ask').click();
     }));
   }
-  document.querySelectorAll('.rw-lang-pill').forEach(b => b.addEventListener('click', renderSuggestions));
+  // RWLang.onChange, not a second click listener on the same pills — see
+  // i18n.js's header note on the listener-order race this replaced.
+  RWLang.onChange(renderSuggestions);
   renderSuggestions();
 
   RWAsk.wire('#rw-learn-q', '#rw-learn-ask', '#rw-learn-answer', { getLang: () => RWLang.getLang(), voice: true });

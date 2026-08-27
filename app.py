@@ -289,15 +289,28 @@ def _parse_ask_ndjson(text: str):
     }
 
 
+class ChatTurn(BaseModel):
+    author: str  # "USER" or "NUCLIA"
+    text: str
+
+
 class AskRequest(BaseModel):
     query: str
     lang: str = "en"
+    # Prior turns of a running conversation, threaded onto ARAG's own /ask
+    # `context` field so a follow-up like "is it open then" or "how do I get
+    # there" resolves against what was already said — a genuine ARAG /ask
+    # feature (confirmed live in the quillfeather-intel build, 26 Aug 2026),
+    # not an app-side workaround. Optional so the existing single-shot ask
+    # boxes (no history) keep working unchanged.
+    history: list[ChatTurn] = []
 
 
 @app.post("/api/assistant")
 def api_ask(req: AskRequest):
     """Hero 1 — multilingual conversational assistant. Cited, grounded, scoped
-    to the clean resource allow-list."""
+    to the clean resource allow-list. Also backs the persistent chat widget
+    (Standard: real chat-context threading) when `history` is supplied."""
     payload = {
         "query": req.query,
         "citations": True,
@@ -305,6 +318,14 @@ def api_ask(req: AskRequest):
         "resource_filters": CLEAN_IDS,
         "search_configuration": SEARCH_CONFIG,
     }
+    if req.history:
+        # Cap to the last 12 turns, 4000 chars each — same discipline as the
+        # verified reference implementation.
+        payload["context"] = [
+            {"author": t.author, "text": t.text[:4000]}
+            for t in req.history
+            if t.author in ("USER", "NUCLIA") and t.text
+        ][-12:]
     try:
         r = _client.post(f"{KB_URL}/ask", headers=_headers(), json=payload)
         r.raise_for_status()

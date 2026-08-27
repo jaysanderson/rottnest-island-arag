@@ -90,17 +90,22 @@
       try {
         const data = await ask(q, lang);
         const answerHtml = renderMarkdown(data.answer || "The concierge couldn't form an answer just then — try rephrasing.");
+        // Voice sits directly under the answer, styled as a prominent filled
+        // pill — NOT a small outline button after the sources, which is why
+        // it went undiscovered (GM feedback, 27 Aug 2026: "Jay couldn't find
+        // it"). One tap, immediately visible, before the reader's eye even
+        // reaches the source tiles.
         output.innerHTML = `
           <div class="rw-answer-panel">
             <div class="rw-answer-text">${answerHtml}</div>
+            ${opts.voice ? '<button class="rw-voice-btn-prominent" id="rw-voice-play"><span class="rw-voice-icon">🔊</span> Listen to this answer</button><audio id="rw-voice-audio" style="display:none;"></audio>' : ""}
             ${renderSources(data.citations)}
-            ${opts.voice ? '<button class="rw-btn rw-btn-outline rw-btn-sm rw-mt-16" id="rw-voice-play">🔊 Listen</button><audio id="rw-voice-audio" style="display:none;"></audio>' : ""}
           </div>`;
         if (opts.voice) {
           const playBtn = output.querySelector("#rw-voice-play");
           const audioEl = output.querySelector("#rw-voice-audio");
           playBtn.addEventListener("click", async () => {
-            playBtn.textContent = "Loading…";
+            playBtn.innerHTML = "Loading…";
             playBtn.disabled = true;
             try {
               const vr = await fetch("/api/voice", {
@@ -108,14 +113,21 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ text: data.answer, lang }),
               });
+              if (!vr.ok) throw new Error("voice failed");
               const blob = await vr.blob();
               audioEl.src = URL.createObjectURL(blob);
               audioEl.play();
-              playBtn.textContent = "🔊 Playing…";
+              playBtn.innerHTML = '<span class="rw-voice-icon">🔊</span> Playing…';
+              audioEl.onended = () => {
+                playBtn.innerHTML = '<span class="rw-voice-icon">🔊</span> Listen to this answer';
+                playBtn.disabled = false;
+              };
             } catch (e) {
-              playBtn.textContent = "Voice unavailable";
-            } finally {
-              playBtn.disabled = false;
+              playBtn.innerHTML = "Voice unavailable";
+              setTimeout(() => {
+                playBtn.innerHTML = '<span class="rw-voice-icon">🔊</span> Listen to this answer';
+                playBtn.disabled = false;
+              }, 2000);
             }
           });
         }
@@ -132,5 +144,9 @@
     });
   }
 
-  window.RWAsk = { ask, wire, renderMarkdown, renderSources };
+  function escapeAndBr(s) {
+    return escapeHtml(s).replace(/\n/g, "<br/>");
+  }
+
+  window.RWAsk = { ask, wire, renderMarkdown, renderSources, escapeHtml, escapeAndBr };
 })();

@@ -38,8 +38,9 @@
 <script src="/static/js/shared.js"></script>
 <script src="/static/js/i18n.js"></script>
 <script src="/static/js/assistant-widget.js"></script>
+<script src="/static/js/chat-widget.js"></script>
 <script>
-  RWAsk.wire('#rw-deals-q', '#rw-deals-ask', '#rw-deals-answer', { getLang: () => 'en' });
+  RWAsk.wire('#rw-deals-q', '#rw-deals-ask', '#rw-deals-answer', { getLang: () => 'en', voice: true });
 
   const grid = document.getElementById('rw-deals-grid');
   fetch('/api/catalog?q=' + encodeURIComponent('subsidy') + '&limit=20')
