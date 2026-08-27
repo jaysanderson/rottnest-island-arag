@@ -415,6 +415,10 @@ def api_see_do(req: SeeDoRequest):
 class ItineraryRequest(BaseModel):
     days: int = 2
     style: str = "active adventure"
+    # Free-form "Anything else?" traveller notes (GM revision, 27 Aug 2026 —
+    # reframed from a "constraints" field after a real visitor typed "love
+    # scuba diving", a preference, into what read as an exclusions box). Can
+    # carry a preference to feature, a hard exclusion to respect, or both.
     constraints: str = ""
     refine: Optional[str] = None
     previous: Optional[dict] = None
@@ -535,13 +539,30 @@ def api_itinerary(req: ItineraryRequest):
 
     generation_query = base_query
     if req.constraints:
-        # Stated as a hard requirement, not folded into the descriptive
-        # sentence above — the placeholder text ("no long walks") the UI
-        # itself invites people to type must reliably reshape the plan.
+        # The field is framed to the visitor as open "Anything else?" travel
+        # notes, not a constraints box (GM revision, 27 Aug 2026 — a real
+        # visitor typed "love scuba diving", a preference, into a field
+        # labelled "Any constraints?"). So this free text can carry a
+        # preference to actively feature ("love scuba diving"), a hard
+        # exclusion to respect ("not keen on long walks"), or both together —
+        # the instruction below lets the model read which is which rather
+        # than the app guessing, and is stated as a requirement (not a soft
+        # mention) either way, since the earlier soft-mention phrasing didn't
+        # reliably reshape the plan (defect-3 fix, unchanged and still here
+        # for the exclusion half of this).
         generation_query += (
-            f"\n\nHARD CONSTRAINT — the itinerary MUST genuinely satisfy this, "
-            f"not just mention it: {req.constraints}. If an activity would "
-            f"violate this constraint, do not include it."
+            f"\n\nTHE TRAVELLER'S OWN NOTE (read carefully and honour it "
+            f"exactly): \"{req.constraints}\"\n"
+            f"- If any part of this note expresses something they WANT, LOVE "
+            f"or ARE INTERESTED IN, prominently feature matching real "
+            f"activities in the plan, drawing from the relevant source pages "
+            f"— don't just mention it, genuinely build the plan around it.\n"
+            f"- If any part of this note expresses something they DON'T WANT, "
+            f"AREN'T KEEN ON, or want to AVOID, treat it as a hard exclusion — "
+            f"the itinerary MUST NOT include any activity that conflicts with "
+            f"it, not just avoid mentioning the conflict.\n"
+            f"- The note can contain both at once (e.g. loves one activity, "
+            f"wants to avoid another) — honour both parts independently."
         )
     generation_query += (
         "\n\nDraw activities from a SPREAD of at least 3 different real source "
