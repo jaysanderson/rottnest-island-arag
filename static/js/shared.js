@@ -1,6 +1,6 @@
 /* Shared chrome for every route: the standing Progress Agentic RAG header
    (gate 2 / B2), the Rottnest nav + footer, and the per-route "How this
-   works" solution-architecture reveal (gate 11 / B12 — one shared component,
+   works" solution-architecture reveal (gate 11 / B12 - one shared component,
    fed a per-route flow spec).
 
    Each page sets `window.RW_PAGE = { nav: 'see-do', reveal: {...} }` before
@@ -28,7 +28,7 @@
       <div class="progress-header-inner">
         <div class="progress-header-brand">
           <img class="progress-header-logo" src="/static/brand/arag-logo-alt.svg" alt="Progress Agentic RAG" />
-          <span class="progress-header-tag">Live demo — built for the Rottnest Island Authority</span>
+          <span class="progress-header-tag">Live demo - built for the Rottnest Island Authority</span>
         </div>
         <div class="progress-header-right">
           <button class="progress-header-btn" id="rw-reveal-btn" type="button">
@@ -90,7 +90,7 @@
         <div class="rw-grid rw-grid-3" style="margin-bottom: 8px;">
           <div>
             <div style="font-family:var(--rw-font-display); text-transform:uppercase; letter-spacing:0.04em; font-weight:700; color:white; margin-bottom:10px;">Wadjemup / Rottnest Island</div>
-            <p style="font-size:0.85rem; max-width:32ch;">A premium eco-tourism experience 19km off the coast of Fremantle, Western Australia — home of the quokka.</p>
+            <p style="font-size:0.85rem; max-width:32ch;">A premium eco-tourism experience 19km off the coast of Fremantle, Western Australia - home of the quokka.</p>
           </div>
           <div>
             <div style="font-family:var(--rw-font-display); text-transform:uppercase; letter-spacing:0.04em; font-weight:700; color:white; margin-bottom:10px; font-size:0.85rem;">Explore</div>
@@ -116,8 +116,7 @@
   document.body.appendChild(footer);
 
   // ---------- Solution-architecture reveal ----------
-  // The content — which names real ARAG mechanisms (/ask, /find, Nuclia) —
-  // is fetched from the server ONLY when the viewer opens the modal, and the
+  // The content - which names real ARAG mechanisms (/ask, /find, Nuclia) - // is fetched from the server ONLY when the viewer opens the modal, and the
   // overlay shell stays empty until then. Gate 11 designates this modal as
   // the one deliberate place those mechanics are shown, but even CSS-hidden
   // static HTML containing those strings reads as a leak to a page-source
@@ -179,7 +178,7 @@
           </div>
           ${
             reveal.gaps
-              ? `<div class="arag-reveal-section"><h3>Honest limits</h3><p>${reveal.gaps}</p><span class="arag-reveal-badge arag-badge-gap">Disclosed platform gap — not silently routed around</span></div>`
+              ? `<div class="arag-reveal-section"><h3>Honest limits</h3><p>${reveal.gaps}</p><span class="arag-reveal-badge arag-badge-gap">Disclosed platform gap - not silently routed around</span></div>`
               : ""
           }
         </div>

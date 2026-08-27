@@ -1,14 +1,14 @@
-/* Persistent conversational chat widget — present on every page (GM revision,
+/* Persistent conversational chat widget - present on every page (GM revision,
    27 Aug 2026). Genuinely multi-turn: the running transcript is threaded as
    ARAG's own /ask `context` field (see app.py's AskRequest.history), so a
    follow-up like "is it open then" or "how do I get there" resolves against
    what was already said, not answered in isolation. Multilingual via a
-   single dropdown (RWLang.mountDropdown — retiring the old chip row's
+   single dropdown (RWLang.mountDropdown - retiring the old chip row's
    listener-order race entirely), grounded + cited + honest decline (same
    /api/assistant endpoint every other ask surface uses), and voice is ONE
-   TAP per answer — not buried, per the GM's "Jay couldn't find it" feedback.
+   TAP per answer - not buried, per the GM's "Jay couldn't find it" feedback.
 
-   The concierge has a face and a name: Kwoka (EN — the real Noongar word
+   The concierge has a face and a name: Kwoka (EN - the real Noongar word
    for quokka, KB-verified) / 跳跳 (ZH) / クオちゃん (JA) / Coco (FR), a
    quokka avatar in the site's own line-art style, changing with the
    language dropdown (GM revision, 27 Aug 2026).
@@ -22,7 +22,7 @@
   const MAX_HISTORY = 12;
 
   // Starter follow-up questions shown before any real conversation exists
-  // (can't call /api/suggestions yet — no history to ground it in). Real,
+  // (can't call /api/suggestions yet - no history to ground it in). Real,
   // AI-generated suggestions take over from the first answer onward.
   const STARTER_QUESTIONS = {
     en: ["Where can I see quokkas?", "What's the best beach for snorkelling?", "How do I get to the island?"],
@@ -31,7 +31,7 @@
     fr: ["Où puis-je voir des quokkas ?", "Quelle est la meilleure plage pour faire du snorkeling ?", "Comment se rendre sur l'île ?"],
   };
 
-  // A friendly, on-brand line-art quokka face — same teal/navy/gold
+  // A friendly, on-brand line-art quokka face - same teal/navy/gold
   // linework as the rest of the site's decorative motifs, not clip-art.
   // Badge version (own circular backdrop) for the navy chat header;
   // face-only version (transparent) for sitting on the already-gold FAB.
@@ -131,30 +131,30 @@
     m.scrollTop = m.scrollHeight;
   }
 
-  // Welcome copy per language — a short, warm greeting in the visitor's own
+  // Welcome copy per language - a short, warm greeting in the visitor's own
   // language, not an English sentence with a foreign name spliced in (real
   // bug found live, 27 Aug 2026: switching to French before asking anything
   // still showed "G'day! I'm Coco" in English).
   const WELCOME = {
     en: {
       greeting: (name) => `G'day! I'm ${name}`,
-      body: "— ask me anything about Wadjemup: beaches, quokkas, the ferry, history, where to stay. I only ever answer from the island's own real information, and I'll tell you straight if I don't know something.",
-      sub: "Switch language up top any time — I'll answer natively and my name changes too.",
+      body: " - ask me anything about Wadjemup: beaches, quokkas, the ferry, history, where to stay. I only ever answer from the island's own real information, and I'll tell you straight if I don't know something.",
+      sub: "Switch language up top any time - I'll answer natively and my name changes too.",
     },
     zh: {
       greeting: (name) => `你好！我是 ${name}`,
-      body: "— 关于Wadjemup的一切都可以问我：海滩、短尾矮袋鼠、渡轮、历史、住宿。我只会根据岛上真实的资料回答，如果我不知道，我会如实告诉你。",
-      sub: "随时可以切换语言 — 我会用当地语言回答，我的名字也会跟着变。",
+      body: " - 关于Wadjemup的一切都可以问我：海滩、短尾矮袋鼠、渡轮、历史、住宿。我只会根据岛上真实的资料回答，如果我不知道，我会如实告诉你。",
+      sub: "随时可以切换语言 - 我会用当地语言回答，我的名字也会跟着变。",
     },
     ja: {
       greeting: (name) => `こんにちは！${name}です`,
-      body: "— ワジェマップについて何でも聞いてください：ビーチ、クオッカ、フェリー、歴史、宿泊先。島の本当の情報だけをもとにお答えします。分からないことは正直にお伝えします。",
-      sub: "いつでも言語を切り替えられます — その言語でお答えし、名前も変わります。",
+      body: " - ワジェマップについて何でも聞いてください：ビーチ、クオッカ、フェリー、歴史、宿泊先。島の本当の情報だけをもとにお答えします。分からないことは正直にお伝えします。",
+      sub: "いつでも言語を切り替えられます - その言語でお答えし、名前も変わります。",
     },
     fr: {
       greeting: (name) => `Bonjour ! Je suis ${name}`,
-      body: "— posez-moi vos questions sur Wadjemup : plages, quokkas, ferry, histoire, hébergement. Je réponds uniquement à partir des vraies informations de l'île, et je vous le dirai honnêtement si je ne sais pas.",
-      sub: "Changez de langue à tout moment en haut — je répondrai nativement et mon nom changera aussi.",
+      body: " - posez-moi vos questions sur Wadjemup : plages, quokkas, ferry, histoire, hébergement. Je réponds uniquement à partir des vraies informations de l'île, et je vous le dirai honnêtement si je ne sais pas.",
+      sub: "Changez de langue à tout moment en haut - je répondrai nativement et mon nom changera aussi.",
     },
   };
 
@@ -166,11 +166,10 @@
   }
 
   // Genuine user-triggered language SWITCH (wired to RWLang.onChange below,
-  // which only fires on the dropdown's own `change` event — never on the
+  // which only fires on the dropdown's own `change` event - never on the
   // initial programmatic mount) always restarts the conversation clean in
   // the new language (GM revision, 27 Aug 2026: a stale prior-language
-  // welcome message was found sitting above an answer in the new language —
-  // switching language must never leave anything stale behind).
+  // welcome message was found sitting above an answer in the new language - // switching language must never leave anything stale behind).
   function onLanguageSwitch() {
     updateConciergeChrome();
     history = [];
@@ -213,7 +212,7 @@
     const existingLoading = document.getElementById("rw-chat-suggestions-loading");
     if (existingLoading) existingLoading.remove();
     // This is a second, sequential ARAG call (grounded in the answer just
-    // given) — a brief skeleton keeps it from reading as "nothing happening"
+    // given) - a brief skeleton keeps it from reading as "nothing happening"
     // during that gap rather than a silent multi-second wait.
     const loadingEl = el(`<div class="rw-chat-suggestions-loading" id="rw-chat-suggestions-loading"><span class="rw-skeleton" style="height:30px;width:70%;display:block;"></span></div>`);
     messages.appendChild(loadingEl);
@@ -242,7 +241,7 @@
       scrollToBottom();
     } catch (e) {
       loadingEl.remove();
-      /* best-effort only — a missing suggestion row never blocks the chat */
+      /* best-effort only - a missing suggestion row never blocks the chat */
     }
   }
 
@@ -275,7 +274,7 @@
     scrollToBottom();
   }
 
-  // Sources only — voice is now the persistent header toggle, not a
+  // Sources only - voice is now the persistent header toggle, not a
   // per-message button (GM revision, 27 Aug 2026: "Jay couldn't find it" as
   // a small button under one answer; a clear, always-visible toggle in the
   // header solves discoverability AND makes every subsequent answer play
@@ -306,7 +305,7 @@
     const btn = document.getElementById("rw-chat-listen-toggle");
     btn.classList.toggle("rw-chat-listen-on", on);
     btn.setAttribute("aria-pressed", on ? "true" : "false");
-    btn.title = on ? "Auto-read is ON — every answer plays aloud (tap to turn off)" : "Auto-read answers aloud";
+    btn.title = on ? "Auto-read is ON - every answer plays aloud (tap to turn off)" : "Auto-read answers aloud";
     if (!on) sharedAudio.pause();
   }
 
@@ -323,7 +322,7 @@
       sharedAudio.src = URL.createObjectURL(blob);
       await sharedAudio.play();
     } catch (e) {
-      /* best-effort — a failed auto-read never blocks the chat */
+      /* best-effort - a failed auto-read never blocks the chat */
     }
   }
 
@@ -353,7 +352,7 @@
       });
       const data = await res.json();
       typingEl.remove();
-      const answerText = data.answer || "I couldn't quite form an answer to that — could you try rephrasing?";
+      const answerText = data.answer || "I couldn't quite form an answer to that - could you try rephrasing?";
       history.push({ author: "NUCLIA", text: answerText, citations: data.citations || [] });
       saveHistory(history);
       renderHistory();
@@ -361,7 +360,7 @@
       if (autoRead) playVoice(answerText);
     } catch (e) {
       typingEl.remove();
-      history.push({ author: "NUCLIA", text: "Ah, something went wrong on my end there — give it another go?", citations: [] });
+      history.push({ author: "NUCLIA", text: "Ah, something went wrong on my end there - give it another go?", citations: [] });
       saveHistory(history);
       renderHistory();
     } finally {
@@ -405,7 +404,7 @@
 
   // Fade the closed launcher out while the visitor is actively scrolling on
   // a narrow screen, and back in ~400ms after scrolling stops (GM revision,
-  // 27 Aug 2026 — the light mitigation requested for the residual /stay
+  // 27 Aug 2026 - the light mitigation requested for the residual /stay
   // catalogue-card overlap: a floating launcher over content mid-scroll is
   // the accepted trade-off every persistent chat widget makes, but it
   // should never sit there at rest once the visitor has stopped).

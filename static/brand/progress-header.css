@@ -1,4 +1,4 @@
-/* Standing Progress Agentic RAG header (gate 2 / B2, layer 1) — always on top,
+/* Standing Progress Agentic RAG header (gate 2 / B2, layer 1) - always on top,
    every route. Built to progress-arag-branding tokens. Sits above the Rottnest
    Island Authority body experience beneath it. */
 
@@ -73,7 +73,7 @@
   max-width: 760px;
   width: 100%;
   /* The MODAL itself scrolls (not just the overlay behind it) so its own
-     header can be position:sticky against it — real defect found live on
+     header can be position:sticky against it - real defect found live on
      mobile, 27 Aug 2026: a ~1168px-tall modal in an 844px viewport scrolled
      the close-X out of reach entirely, with only click-outside left to
      close it. */

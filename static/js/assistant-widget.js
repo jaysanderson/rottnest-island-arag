@@ -1,17 +1,17 @@
 /* Shared grounded-ask widget: full-width answer, source tiles laid out
-   ACROSS the page (B24 — never a narrow column beside a tall source rail). */
+   ACROSS the page (B24 - never a narrow column beside a tall source rail). */
 (function () {
   function escapeHtml(s) {
     return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
   // Minimal, safe markdown -> HTML (headings, bold, italics, paragraphs,
-  // links) — real rendering, never raw markdown syntax on screen (gate 8).
+  // links) - real rendering, never raw markdown syntax on screen (gate 8).
   // Used both for generated answers and for rendering real extracted source
   // text on the /r/ resource viewer.
   // `plainLinks: true` (used for raw extracted source text, which is full of
   // the real site's own internal navigation links) drops the href and keeps
-  // only the visible text — real rottnestisland.com URL slugs are natural
+  // only the visible text - real rottnestisland.com URL slugs are natural
   // English phrases ("find-your-ideal-winter-escape") that can otherwise
   // coincidentally collide with an ARAG-endpoint-name leak scan, and these
   // links aren't part of this demo's own citation/trust mechanism anyway
@@ -21,7 +21,7 @@
     let html = escapeHtml(text);
     html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
     html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
-    // dotAll (s) flag — real extracted source content sometimes has link text
+    // dotAll (s) flag - real extracted source content sometimes has link text
     // spanning multiple lines (e.g. an image caption + heading inside one
     // link), which the default line-bound "." would otherwise leave as raw,
     // unrendered markdown syntax on screen.
@@ -40,7 +40,7 @@
         const headingMatch = trimmed.match(/^(#{1,6})\s*(.*)$/);
         if (headingMatch) {
           const title = headingMatch[2].trim();
-          if (!title) return ""; // a bare "####" with no text — drop it, not a visible defect
+          if (!title) return ""; // a bare "####" with no text - drop it, not a visible defect
           const level = Math.min(headingMatch[1].length + 2, 6); // keep below page h1/h2
           return `<h${level}>${title}</h${level}>`;
         }
@@ -89,9 +89,9 @@
       button.disabled = true;
       try {
         const data = await ask(q, lang);
-        const answerHtml = renderMarkdown(data.answer || "The concierge couldn't form an answer just then — try rephrasing.");
+        const answerHtml = renderMarkdown(data.answer || "The concierge couldn't form an answer just then - try rephrasing.");
         // Voice sits directly under the answer, styled as a prominent filled
-        // pill — NOT a small outline button after the sources, which is why
+        // pill - NOT a small outline button after the sources, which is why
         // it went undiscovered (GM feedback, 27 Aug 2026: "Jay couldn't find
         // it"). One tap, immediately visible, before the reader's eye even
         // reaches the source tiles.

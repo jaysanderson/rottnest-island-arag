@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Plan Your Trip — Wadjemup / Rottnest Island</title>
+<title>Plan Your Trip - Wadjemup / Rottnest Island</title>
 <link rel="stylesheet" href="/static/brand/arag-tokens.css" />
 <link rel="stylesheet" href="/static/brand/progress-header.css" />
 <link rel="stylesheet" href="/static/css/rottnest.css" />
@@ -27,9 +27,9 @@
     <path d="M20 340 Q120 260 210 300 Q300 340 400 280" stroke="#AEE2E9" stroke-width="1.5" fill="none"/>
   </svg>
   <div class="rw-container" style="position:relative;">
-    <div class="rw-eyebrow" style="color:#FDBC3F;">The genuine upgrade — Rottnest's real site has no trip planner</div>
+    <div class="rw-eyebrow" style="color:#FDBC3F;">The genuine upgrade - Rottnest's real site has no trip planner</div>
     <h1 class="rw-h1" style="color:white; margin-top:8px;">Tell Kwoka how you want to island. We'll sort the rest.</h1>
-    <p class="rw-lead" style="color:#AEE2E9; max-width:60ch;">Every activity you get back is dinkum, cited straight to a real Wadjemup page — Kwoka can only suggest what genuinely exists here. Nothing made up, promise.</p>
+    <p class="rw-lead" style="color:#AEE2E9; max-width:60ch;">Every activity you get back is dinkum, cited straight to a real Wadjemup page - Kwoka can only suggest what genuinely exists here. Nothing made up, promise.</p>
   </div>
 </section>
 
@@ -93,15 +93,15 @@
   const notesInput = document.getElementById('rw-plan-constraints');
   let lastPayload = null;
 
-  // "Anything else?" copy per language (GM revision, 27 Aug 2026 — reframed
+  // "Anything else?" copy per language (GM revision, 27 Aug 2026 - reframed
   // from "Any constraints?" after a real visitor typed a preference, "love
   // scuba diving", into what read as an exclusions-only field). Localized
   // and named for the concierge the same way the chat widget's welcome is.
   const NOTES_COPY = {
-    en: { label: "Anything else?", placeholder: "Tell Kwoka what you're into and we'll shape the plan around it — e.g. love scuba diving, chasing the best coffee, travelling with kids, not keen on long walks" },
-    zh: { label: "还有别的吗？", placeholder: "告诉跳跳你喜欢什么，我们会据此安排行程——比如喜欢潜水、想找地道咖啡、带着孩子出行、不想走太远的路" },
-    ja: { label: "他にご希望は？", placeholder: "クオちゃんに好きなことを教えてください。それに合わせてプランを作ります — 例：スキューバダイビングが好き、美味しいコーヒーを探している、子供連れ、長い徒歩は避けたい" },
-    fr: { label: "Autre chose ?", placeholder: "Dites à Coco ce qui vous plaît et on adaptera le programme — par ex. j'adore la plongée, à la recherche du meilleur café, en famille avec des enfants, pas envie de longues marches" },
+    en: { label: "Anything else?", placeholder: "Tell Kwoka what you're into and we'll shape the plan around it - e.g. love scuba diving, chasing the best coffee, travelling with kids, not keen on long walks" },
+    zh: { label: "还有别的吗？", placeholder: "告诉跳跳你喜欢什么，我们会据此安排行程 - 比如喜欢潜水、想找地道咖啡、带着孩子出行、不想走太远的路" },
+    ja: { label: "他にご希望は？", placeholder: "クオちゃんに好きなことを教えてください。それに合わせてプランを作ります - 例：スキューバダイビングが好き、美味しいコーヒーを探している、子供連れ、長い徒歩は避けたい" },
+    fr: { label: "Autre chose ?", placeholder: "Dites à Coco ce qui vous plaît et on adaptera le programme - par ex. j'adore la plongée, à la recherche du meilleur café, en famille avec des enfants, pas envie de longues marches" },
   };
   function applyNotesCopy() {
     const c = NOTES_COPY[RWLang.getLang()] || NOTES_COPY.en;
@@ -117,7 +117,7 @@
 
   function render(obj) {
     if (!obj.days || !obj.days.length) {
-      result.innerHTML = `<p class="rw-body-text" style="text-align:center;">${obj.note || 'Nothing came back — try adjusting your brief.'}</p>`;
+      result.innerHTML = `<p class="rw-body-text" style="text-align:center;">${obj.note || 'Nothing came back - try adjusting your brief.'}</p>`;
       refineWrap.style.display = 'none';
       return;
     }

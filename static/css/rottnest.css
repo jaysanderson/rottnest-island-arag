@@ -1,7 +1,7 @@
 /* ==========================================================================
-   Rottnest Island Authority — brand design system
+   Rottnest Island Authority - brand design system
    Faithful to rottnestisland.com's real palette/type/mood, rebuilt with our
-   own imagery (no scraped photography/logo). This is the BODY brand — see
+   own imagery (no scraped photography/logo). This is the BODY brand - see
    brand/progress-header.css for the standing Progress Agentic RAG frame that
    sits above it on every route (gate 2 / B2).
    ========================================================================== */
@@ -261,11 +261,11 @@ a.rw-link-plain { color: inherit; text-decoration: none; }
 .rw-catalog-title { font-family: var(--rw-font-display); font-weight: 600; font-size: 1.05rem; text-transform: none; letter-spacing: 0; color: var(--rw-navy); margin: 0; }
 .rw-catalog-hook { font-size: 0.92rem; color: var(--rw-teal-darker); margin: 0; }
 .rw-catalog-highlights { margin: 4px 0 0; padding: 0; list-style: none; font-size: 0.85rem; color: var(--rw-navy); display: flex; flex-direction: column; gap: 3px; }
-.rw-catalog-highlights li::before { content: '— '; color: var(--rw-orange); }
+.rw-catalog-highlights li::before { content: ' - '; color: var(--rw-orange); }
 .rw-catalog-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 
 /* --- Language dropdown (replaces the old chip row everywhere, GM revision
-   27 Aug 2026 — one switching pattern, not several). Base `.rw-lang-select`
+   27 Aug 2026 - one switching pattern, not several). Base `.rw-lang-select`
    sits on white/light card backgrounds; `.rw-lang-select-dark` is the
    high-contrast variant for navy hero sections and the chat header. Both
    stay well clear of B20's faint-control/faint-text failure. --- */
@@ -295,7 +295,7 @@ a.rw-link-plain { color: inherit; text-decoration: none; }
 .rw-lang-select-dark option { color: var(--rw-ink); }
 
 /* --- Prominent voice control (GM feedback, 27 Aug 2026: was undiscoverable
-   as a small outline button after the sources — now a filled pill directly
+   as a small outline button after the sources - now a filled pill directly
    under every answer, one tap, impossible to miss). --- */
 .rw-voice-btn-prominent {
   display: inline-flex;
@@ -357,7 +357,7 @@ a.rw-link-plain { color: inherit; text-decoration: none; }
 .rw-source-tile .rw-source-title { font-size: 0.88rem; font-weight: 600; line-height: 1.3; }
 
 /* --- Highlighted passage on the source viewer (B23) --- */
-/* A block-level container (not <mark>, deliberately — the extracted passage
+/* A block-level container (not <mark>, deliberately - the extracted passage
    often contains full paragraphs/headings, and an inline element's own
    background never paints behind nested block children, a real bug found
    live 27 Aug 2026: the highlight existed in the DOM with the right computed
@@ -507,7 +507,7 @@ a.rw-link-plain { color: inherit; text-decoration: none; }
   flex-shrink: 0;
 }
 .rw-chat-icon-btn:hover { background: rgba(255,255,255,0.24); }
-/* Persistent Listen (auto-read) toggle — obvious ON state (GM revision,
+/* Persistent Listen (auto-read) toggle - obvious ON state (GM revision,
    27 Aug 2026: "make the on/off state obvious"), not a subtle tint. */
 #rw-chat-listen-toggle.rw-chat-listen-on {
   background: var(--rw-gold);
@@ -516,9 +516,9 @@ a.rw-link-plain { color: inherit; text-decoration: none; }
 }
 #rw-chat-listen-toggle.rw-chat-listen-on:hover { background: #ffc85c; }
 
-/* Genuine follow-up question chips — distinct from the source-citation
+/* Genuine follow-up question chips - distinct from the source-citation
    chips below an answer, and from raw KB titles (GM revision, 27 Aug 2026:
-   real defect — the only "suggestion"-shaped surface was citation tiles
+   real defect - the only "suggestion"-shaped surface was citation tiles
    showing raw page titles like "Sitemap"; these are separately generated,
    tourist-phrased QUESTIONS that submit as the next turn on click). */
 .rw-chat-suggestions { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; align-self: flex-start; max-width: 88%; }
@@ -604,9 +604,8 @@ a.rw-link-plain { color: inherit; text-decoration: none; }
 
 @media (max-width: 640px) {
   #rw-chat-fab-label { display: none; }
-  /* Small, corner-hugging circle (44px — WCAG minimum touch target, no
-     larger) so the smallest possible footprint sits over scrolling content —
-     the same trade-off every persistent chat launcher makes, minimised. */
+  /* Small, corner-hugging circle (44px - WCAG minimum touch target, no
+     larger) so the smallest possible footprint sits over scrolling content - the same trade-off every persistent chat launcher makes, minimised. */
   #rw-chat-fab { padding: 11px; right: 14px; bottom: 14px; }
   .rw-chat-panel {
     right: 0;

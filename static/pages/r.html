@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Source — Wadjemup / Rottnest Island</title>
+<title>Source - Wadjemup / Rottnest Island</title>
 <link rel="stylesheet" href="/static/brand/arag-tokens.css" />
 <link rel="stylesheet" href="/static/brand/progress-header.css" />
 <link rel="stylesheet" href="/static/css/rottnest.css" />
@@ -53,14 +53,14 @@
     if (!r.ok) throw new Error('not found');
     return r.json();
   }).then(data => {
-    document.title = data.title + ' — Wadjemup';
+    document.title = data.title + ' - Wadjemup';
     document.getElementById('rw-src-title').textContent = data.title.replace(' | Rottnest Island','');
     document.getElementById('rw-src-category').textContent = data.category || 'Source page';
     document.getElementById('rw-src-live-link').href = '/go/' + rid;
     document.getElementById('rw-src-chips').innerHTML = (data.chips||[]).map(c => `<span class="rw-chip">${c}</span>`).join('');
 
     const raw = data.text || '';
-    // paragraphId shape: "<resourceId>/u/link/<start>-<end>" — render the
+    // paragraphId shape: "<resourceId>/u/link/<start>-<end>" - render the
     // real extracted text through the same markdown renderer as every other
     // answer surface (gate 8), splitting only at the citation's own
     // character offsets so the exact grounded passage can be marked (B23).

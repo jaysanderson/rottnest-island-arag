@@ -1,5 +1,5 @@
 """
-Rottnest Island Authority demo — FastAPI proxy.
+Rottnest Island Authority demo - FastAPI proxy.
 
 Every ARAG call is made server-side; the KB service-account token never
 reaches the browser. The frontend (static/) calls this API only.
@@ -56,13 +56,12 @@ CLEAN_IDS = [r["id"] for r in ALL_RESOURCES]
 CLEAN_ID_SET = set(CLEAN_IDS)
 RESOURCE_CACHE = json.loads((DATA_DIR / "resource_cache.json").read_text())
 
-# ---- Utility/nav/legal page exclusion — ONE shared list the whole app uses
-# (GM revision, 27 Aug 2026: real defect — nav/utility/legal pages like
+# ---- Utility/nav/legal page exclusion - ONE shared list the whole app uses
+# (GM revision, 27 Aug 2026: real defect - nav/utility/legal pages like
 # "Sitemap", "Contact Us", "Trade Information" and admin sub-FAQ pages were
 # legitimately retrievable (not junk/duplicates, just not tourist content)
 # and surfaced as citations, chat follow-up questions, and catalogue items.
-# Declared explicitly here rather than trusting a live facet/label query —
-# same discipline as the junk/duplicate exclusion, for the same reason
+# Declared explicitly here rather than trusting a live facet/label query - # same discipline as the junk/duplicate exclusion, for the same reason
 # (CLAUDE.md's cross-tenant + relevance lesson: never trust a live facet
 # response alone to define what belongs in a customer-facing surface).
 # Applied to every retrieval call and every listing surface: itinerary,
@@ -121,7 +120,7 @@ def _language_directive(lang: str) -> str:
     language is deterministic, never left to the model inferring from the
     question's own script (real defect, found live by demo-tester 27 Aug
     2026: 7 of 9 non-English test questions came back in English despite the
-    correct language selected — root cause was that `lang` reached this app
+    correct language selected - root cause was that `lang` reached this app
     but was never actually forwarded into the ARAG payload). Always stated,
     including for English, so there is one code path, not a special case."""
     name = LANGUAGE_NAMES.get(lang, "English")
@@ -129,7 +128,7 @@ def _language_directive(lang: str) -> str:
         f"\n\nIMPORTANT INSTRUCTION FOR YOUR RESPONSE: write your entire reply "
         f"in {name}, as a native {name} speaker would, regardless of what "
         f"language this question happens to be written in. Do not mention, "
-        f"apologise for, or comment on language or translation in any way — "
+        f"apologise for, or comment on language or translation in any way - "
         f"just answer naturally and directly in {name}, as if the visitor had "
         f"asked their question in {name} to begin with."
     )
@@ -152,43 +151,43 @@ PERSONA_LABELS = {
 
 # ---- Solution-architecture reveal content (gate 11 / B12) ------------------
 # Served on demand via /api/reveal/<page>, never embedded in a page's initial
-# HTML — the reveal is the one deliberate place ARAG mechanics (/ask, /find,
+# HTML - the reveal is the one deliberate place ARAG mechanics (/ask, /find,
 # Nuclia) are named, but even CSS-hidden static HTML containing those strings
 # reads as a leak to a page-source scan. Fetching this only when the viewer
 # opens the modal keeps the default rendered page genuinely clean.
 REVEALS = {
     "home": {
         "title": "How the Wadjemup concierge works",
-        "what": 'Every "Ask" box on this site sends your question to Rottnest Island Authority\'s own visitor concierge — never a generic AI, never the open internet.',
+        "what": 'Every "Ask" box on this site sends your question to Rottnest Island Authority\'s own visitor concierge - never a generic AI, never the open internet.',
         "flow": [
             {"label": "Your question", "detail": "typed in any of 4 languages"},
             {"label": "App server proxy", "detail": "KB token never reaches your browser"},
             {"label": "ARAG /ask", "detail": "retrieves + grounds + generates, scoped to 166 real pages"},
             {"label": "Cited answer", "detail": "every claim links to its real source page"},
         ],
-        "why": "A visitor gets a trustworthy answer instead of hunting through menus — and Rottnest Island Authority gets every question logged as real demand signal, not a support ticket.",
+        "why": "A visitor gets a trustworthy answer instead of hunting through menus - and Rottnest Island Authority gets every question logged as real demand signal, not a support ticket.",
     },
     "see-do": {
         "title": "How See & Do works",
-        "what": "Choosing a traveller type re-ranks the SAME 166 real Wadjemup pages by relevance to that persona — nothing is written or rewritten, only re-ordered.",
+        "what": "Choosing a traveller type re-ranks the SAME 166 real Wadjemup pages by relevance to that persona - nothing is written or rewritten, only re-ordered.",
         "flow": [
             {"label": "Persona selected", "detail": 'e.g. "family with kids"'},
             {"label": "App proxy", "detail": "maps persona to a real retrieval query"},
-            {"label": "ARAG /find", "detail": "pure semantic retrieval, no generation — the re-ranked content IS the answer"},
+            {"label": "ARAG /find", "detail": "pure semantic retrieval, no generation - the re-ranked content IS the answer"},
             {"label": "Re-ranked grid", "detail": "real thumbnails + DA-generated hooks"},
         ],
-        "why": "A visitor sees the island through their own trip's lens in one tap — no filters to configure, no generic \"top 10\" list built for nobody.",
+        "why": "A visitor sees the island through their own trip's lens in one tap - no filters to configure, no generic \"top 10\" list built for nobody.",
     },
     "stay": {
         "title": "How the Stay catalogue works",
-        "what": "Every card here — thumbnail, hook, highlights, chips — is generated by ARAG reading that property's own real page. Nothing is hardcoded copy.",
+        "what": "Every card here - thumbnail, hook, highlights, chips - is generated by ARAG reading that property's own real page. Nothing is hardcoded copy.",
         "flow": [
             {"label": "Ingest", "detail": "each accommodation page ingested as its own resource"},
             {"label": "Nuclia thumbnail", "detail": "a real extracted preview image, not a placeholder icon"},
-            {"label": "ARAG /ask + schema", "detail": "structured extraction: hook, highlights, category, chips — over the page's own free text"},
+            {"label": "ARAG /ask + schema", "detail": "structured extraction: hook, highlights, category, chips - over the page's own free text"},
             {"label": "Catalogue card", "detail": "rendered at any corpus size, resolved by resource id"},
         ],
-        "why": "A prospective guest scans real, specific detail in seconds instead of reading five paragraphs per property — and Rottnest Island Authority never hand-writes catalogue copy again.",
+        "why": "A prospective guest scans real, specific detail in seconds instead of reading five paragraphs per property - and Rottnest Island Authority never hand-writes catalogue copy again.",
     },
     "visit": {
         "title": "How the Visit assistant works",
@@ -199,40 +198,40 @@ REVEALS = {
             {"label": "ARAG /ask", "detail": "neighbouring-paragraph context, scoped to 166 real pages"},
             {"label": "Cited answer"},
         ],
-        "why": "Practical logistics are the #1 reason a visitor abandons planning — a fast, accurate answer here is the difference between a booking and a bounce.",
-        "gaps": "Accessibility coverage on the real site is currently thin (one page) — if a question genuinely can't be grounded, the concierge says so honestly rather than guessing.",
+        "why": "Practical logistics are the #1 reason a visitor abandons planning - a fast, accurate answer here is the difference between a booking and a bounce.",
+        "gaps": "Accessibility coverage on the real site is currently thin (one page) - if a question genuinely can't be grounded, the concierge says so honestly rather than guessing.",
     },
     "plan": {
-        "title": "How the itinerary planner works — the mandatory honesty pattern",
+        "title": "How the itinerary planner works - the mandatory honesty pattern",
         "what": "This is the flagship feature: a trip planner built entirely from real, retrieved Wadjemup content, with a structural guarantee against fabricated recommendations.",
         "flow": [
             {"label": "Your brief", "detail": "days, style, constraints"},
-            {"label": "ARAG /find", "detail": "retrieves real candidate pages for that brief — their titles become the ONLY allowed sources"},
-            {"label": "Enum-constrained /ask", "detail": 'answer_json_schema forces every "source" field to be one of those real titles — the model literally cannot invent a source'},
+            {"label": "ARAG /find", "detail": "retrieves real candidate pages for that brief - their titles become the ONLY allowed sources"},
+            {"label": "Enum-constrained /ask", "detail": 'answer_json_schema forces every "source" field to be one of those real titles - the model literally cannot invent a source'},
             {"label": "Itinerary", "detail": "each item deep-links to its real source page"},
         ],
-        "why": 'Early testing found that a free-text "source" field lets a model fabricate a plausible-sounding page that doesn\'t exist — this schema-enum pattern closes that gap structurally, not by asking nicely. It\'s the difference between a demo and something you could actually ship to visitors.',
+        "why": 'Early testing found that a free-text "source" field lets a model fabricate a plausible-sounding page that doesn\'t exist - this schema-enum pattern closes that gap structurally, not by asking nicely. It\'s the difference between a demo and something you could actually ship to visitors.',
     },
     "learn": {
         "title": "How the multilingual concierge works",
-        "what": "The same 166 real Wadjemup pages ground answers in whichever of four languages you ask in — the model answers natively, it isn't translating a canned English reply.",
+        "what": "The same 166 real Wadjemup pages ground answers in whichever of four languages you ask in - the model answers natively, it isn't translating a canned English reply.",
         "flow": [
             {"label": "Question", "detail": "in EN / ZH / JA / FR"},
             {"label": "ARAG /ask", "detail": "retrieves the real English source content, generates a native-language answer"},
             {"label": "Citations", "detail": "always link to the real (English) source page"},
-            {"label": "ElevenLabs voice", "detail": "native speaker per language — eleven_multilingual_v2"},
+            {"label": "ElevenLabs voice", "detail": "native speaker per language - eleven_multilingual_v2"},
         ],
-        "why": "A Mandarin- or Japanese-speaking visitor gets the exact same grounded, trustworthy experience an English speaker gets — not a second-class \"translate this page\" button. Trust here comes from resolvable citations, not a raw per-language quality score (REMi under-scores non-English answers that are equally well-grounded).",
+        "why": "A Mandarin- or Japanese-speaking visitor gets the exact same grounded, trustworthy experience an English speaker gets - not a second-class \"translate this page\" button. Trust here comes from resolvable citations, not a raw per-language quality score (REMi under-scores non-English answers that are equally well-grounded).",
     },
     "deals": {
         "title": "How the Deals page works",
-        "what": "Deals and subsidy questions are grounded in the island's own current offer and subsidy-program pages — the catalogue below lists them via /find, generated copy same as every other listing.",
+        "what": "Deals and subsidy questions are grounded in the island's own current offer and subsidy-program pages - the catalogue below lists them via /find, generated copy same as every other listing.",
         "flow": [
             {"label": "Your question"},
             {"label": "ARAG /ask", "detail": "scoped to real deals/subsidy pages"},
             {"label": "Cited terms", "detail": "never an invented price or eligibility rule"},
         ],
-        "why": "Subsidy terms and offer conditions are exactly the kind of content that's costly to get wrong — grounding means the concierge can't improvise an eligibility rule that doesn't exist.",
+        "why": "Subsidy terms and offer conditions are exactly the kind of content that's costly to get wrong - grounding means the concierge can't improvise an eligibility rule that doesn't exist.",
     },
     "resource": {
         "title": "How citation highlighting works",
@@ -242,12 +241,12 @@ REVEALS = {
             {"label": "App proxy", "detail": "resolves the resource's cached extracted text"},
             {"label": "Render + highlight", "detail": "the cited character range is marked and scrolled into view"},
         ],
-        "why": "Trust means being able to check the receipts — every claim traces back to the exact sentence it came from, not just \"somewhere in this document\".",
+        "why": "Trust means being able to check the receipts - every claim traces back to the exact sentence it came from, not just \"somewhere in this document\".",
     },
 }
 
 
-app = FastAPI(title="Rottnest Island Authority — Wadjemup demo")
+app = FastAPI(title="Rottnest Island Authority - Wadjemup demo")
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
 )
@@ -312,7 +311,7 @@ def _parse_ask_ndjson(text: str):
             error_detail = item
 
     # Cross-check citations against the clean allow-list server-side (defense
-    # in depth — /ask's filter enforcement is documented as weaker than
+    # in depth - /ask's filter enforcement is documented as weaker than
     # /find's; resource_filters is the primary guard, this is the backstop).
     seen_resource_ids = []
     citation_list = []
@@ -361,7 +360,7 @@ class AskRequest(BaseModel):
     lang: str = "en"
     # Prior turns of a running conversation, threaded onto ARAG's own /ask
     # `context` field so a follow-up like "is it open then" or "how do I get
-    # there" resolves against what was already said — a genuine ARAG /ask
+    # there" resolves against what was already said - a genuine ARAG /ask
     # feature (confirmed live in the quillfeather-intel build, 26 Aug 2026),
     # not an app-side workaround. Optional so the existing single-shot ask
     # boxes (no history) keep working unchanged.
@@ -370,7 +369,7 @@ class AskRequest(BaseModel):
 
 @app.post("/api/assistant")
 def api_ask(req: AskRequest):
-    """Hero 1 — multilingual conversational assistant. Cited, grounded, scoped
+    """Hero 1 - multilingual conversational assistant. Cited, grounded, scoped
     to the clean resource allow-list. Also backs the persistent chat widget
     (Standard: real chat-context threading) when `history` is supplied."""
     payload = {
@@ -381,7 +380,7 @@ def api_ask(req: AskRequest):
         "search_configuration": SEARCH_CONFIG,
     }
     if req.history:
-        # Cap to the last 12 turns, 4000 chars each — same discipline as the
+        # Cap to the last 12 turns, 4000 chars each - same discipline as the
         # verified reference implementation.
         payload["context"] = [
             {"author": t.author, "text": t.text[:4000]}
@@ -405,14 +404,14 @@ class SuggestionsRequest(BaseModel):
 @app.post("/api/suggestions")
 def api_suggestions(req: SuggestionsRequest):
     """Genuine follow-up QUESTIONS for the chat widget (GM revision, 27 Aug
-    2026 — real defect: the widget's only "suggestion"-shaped surface was the
+    2026 - real defect: the widget's only "suggestion"-shaped surface was the
     citation source tiles, so a viewer saw raw KB page titles like "Sitemap"
     and "Trade Information" as if they were suggested next questions, and
     clicking one just opened that source page instead of asking anything).
     This is a genuinely separate ARAG mechanism from citations: a structured
     /ask + answer_json_schema call, grounded in the conversation so far and
     scoped to the customer-facing allow-list, asking the model for real
-    tourist-phrased follow-up questions — never a raw resource-title dump."""
+    tourist-phrased follow-up questions - never a raw resource-title dump."""
     if not req.history:
         return {"questions": []}
     transcript = "\n".join(
@@ -458,7 +457,7 @@ def api_suggestions(req: SuggestionsRequest):
         r = _client.post(f"{KB_URL}/ask", headers=_headers(), json=payload)
         r.raise_for_status()
     except httpx.HTTPError:
-        return {"questions": []}  # best-effort — never block the chat on this
+        return {"questions": []}  # best-effort - never block the chat on this
     parsed = _parse_ask_ndjson(r.text)
     obj = parsed.get("answer_json") or {}
     questions = [q for q in obj.get("questions", []) if isinstance(q, str) and q.strip()]
@@ -471,7 +470,7 @@ class SeeDoRequest(BaseModel):
 
 @app.post("/api/see-do")
 def api_see_do(req: SeeDoRequest):
-    """Hero 2 — persona re-ranking via pure /find semantic retrieval. No
+    """Hero 2 - persona re-ranking via pure /find semantic retrieval. No
     generation; the re-ranked real content IS the answer."""
     query = PERSONA_QUERIES.get(req.persona)
     if not query:
@@ -517,8 +516,7 @@ def api_see_do(req: SeeDoRequest):
 class ItineraryRequest(BaseModel):
     days: int = 2
     style: str = "active adventure"
-    # Free-form "Anything else?" traveller notes (GM revision, 27 Aug 2026 —
-    # reframed from a "constraints" field after a real visitor typed "love
+    # Free-form "Anything else?" traveller notes (GM revision, 27 Aug 2026 - # reframed from a "constraints" field after a real visitor typed "love
     # scuba diving", a preference, into what read as an exclusions box). Can
     # carry a preference to feature, a hard exclusion to respect, or both.
     constraints: str = ""
@@ -529,13 +527,13 @@ class ItineraryRequest(BaseModel):
 
 @app.post("/api/itinerary")
 def api_itinerary(req: ItineraryRequest):
-    """Hero 3 — THE grounded itinerary planner. Mandatory pattern:
+    """Hero 3 - THE grounded itinerary planner. Mandatory pattern:
     /find for real candidate titles, THEN an enum-constrained answer_json_schema
     /ask so the model can only cite a source_title that genuinely exists.
     Never a bare /ask with a free-text source field (de-risk proved fabrication)."""
     # The RETRIEVAL query stays natural language (semantic search quality
     # matters most here); the GENERATION query below is a separate, stronger
-    # string with explicit imperative instructions — real defects found live
+    # string with explicit imperative instructions - real defects found live
     # by demo-tester, 27 Aug 2026: (a) the UI's own placeholder constraint
     # text "no long walks" didn't reliably reshape the plan across repeated
     # runs when folded in as a soft clause, and (b) one run cited all 8 items
@@ -563,7 +561,7 @@ def api_itinerary(req: ItineraryRequest):
     candidate_titles = []
     title_to_id = {}
     # Best-scoring paragraph id per resource, captured from this same /find
-    # call — reused below so an itinerary citation can highlight+scroll to
+    # call - reused below so an itinerary citation can highlight+scroll to
     # the exact passage on /r/, the same as every other citation surface
     # (real defect found live by demo-tester, 27 Aug 2026: itinerary
     # citations only carried resource_id/uri, no paragraph offset, so
@@ -579,7 +577,7 @@ def api_itinerary(req: ItineraryRequest):
         best_score, best_pid = -1.0, None
         for field_key, field in res.get("fields", {}).items():
             # Only the real body-content field ("/u/link", the ingested page
-            # text cached in resource_cache.json) — /find can also return a
+            # text cached in resource_cache.json) - /find can also return a
             # synthetic paragraph over the "/a/title" field, whose character
             # offsets are into the short title string, not the cached body
             # text r.html slices for highlighting. Using one of those would
@@ -595,7 +593,7 @@ def api_itinerary(req: ItineraryRequest):
     if not candidate_titles:
         return {
             "days": [],
-            "note": "The concierge couldn't find enough of Rottnest's own content for that combination — try loosening a constraint (fewer days, a broader style).",
+            "note": "The concierge couldn't find enough of Rottnest's own content for that combination - try loosening a constraint (fewer days, a broader style).",
         }
 
     schema = {
@@ -642,12 +640,11 @@ def api_itinerary(req: ItineraryRequest):
     generation_query = base_query
     if req.constraints:
         # The field is framed to the visitor as open "Anything else?" travel
-        # notes, not a constraints box (GM revision, 27 Aug 2026 — a real
+        # notes, not a constraints box (GM revision, 27 Aug 2026 - a real
         # visitor typed "love scuba diving", a preference, into a field
         # labelled "Any constraints?"). So this free text can carry a
         # preference to actively feature ("love scuba diving"), a hard
-        # exclusion to respect ("not keen on long walks"), or both together —
-        # the instruction below lets the model read which is which rather
+        # exclusion to respect ("not keen on long walks"), or both together - # the instruction below lets the model read which is which rather
         # than the app guessing, and is stated as a requirement (not a soft
         # mention) either way, since the earlier soft-mention phrasing didn't
         # reliably reshape the plan (defect-3 fix, unchanged and still here
@@ -658,17 +655,17 @@ def api_itinerary(req: ItineraryRequest):
             f"- If any part of this note expresses something they WANT, LOVE "
             f"or ARE INTERESTED IN, prominently feature matching real "
             f"activities in the plan, drawing from the relevant source pages "
-            f"— don't just mention it, genuinely build the plan around it.\n"
+            f" - don't just mention it, genuinely build the plan around it.\n"
             f"- If any part of this note expresses something they DON'T WANT, "
-            f"AREN'T KEEN ON, or want to AVOID, treat it as a hard exclusion — "
+            f"AREN'T KEEN ON, or want to AVOID, treat it as a hard exclusion - "
             f"the itinerary MUST NOT include any activity that conflicts with "
             f"it, not just avoid mentioning the conflict.\n"
             f"- The note can contain both at once (e.g. loves one activity, "
-            f"wants to avoid another) — honour both parts independently."
+            f"wants to avoid another) - honour both parts independently."
         )
     generation_query += (
         "\n\nDraw activities from a SPREAD of at least 3 different real source "
-        "pages across the whole itinerary where the candidates allow it — do "
+        "pages across the whole itinerary where the candidates allow it - do "
         "not cite the same single page for every item."
     )
     generation_query += _language_directive(req.lang)
@@ -689,7 +686,7 @@ def api_itinerary(req: ItineraryRequest):
     parsed = _parse_ask_ndjson(ar.text)
     obj = parsed.get("answer_json") or {"days": []}
 
-    # Enrich each item with the real source uri/id and a thumbnail — and
+    # Enrich each item with the real source uri/id and a thumbnail - and
     # defense-in-depth: drop any item whose source_title somehow isn't one of
     # the real candidates (should be impossible under the enum constraint,
     # but never trust generation alone for an honesty guarantee).
@@ -715,7 +712,7 @@ def go_to_live_source(resource_id: str):
     """Server-side redirect to the resource's real rottnestisland.com URL.
 
     Exists so the raw external URL string never has to appear in client-facing
-    HTML — a small number of the real site's own URL slugs are natural English
+    HTML - a small number of the real site's own URL slugs are natural English
     phrases (e.g. "find-your-ideal-winter-escape") that can otherwise
     coincidentally collide with an ARAG-endpoint-name leak scan. The citation
     is unchanged and still genuinely honest: this 302s straight to the same
@@ -739,7 +736,7 @@ def api_resource(resource_id: str):
     return {
         "id": resource_id,
         "title": r["title"],
-        # "uri" deliberately omitted — the live-source link goes through
+        # "uri" deliberately omitted - the live-source link goes through
         # /go/{resource_id} server-side (see go_to_live_source) so the raw
         # external URL string never has to appear in client-facing HTML.
         "text": r["text"],
@@ -764,7 +761,7 @@ def api_thumbnail(resource_id: str):
 
 @app.get("/api/catalog")
 def api_catalog(category: Optional[str] = None, q: Optional[str] = None, limit: int = 60, offset: int = 0):
-    """Resolves by resource id from the cache, not a capped client scan — works
+    """Resolves by resource id from the cache, not a capped client scan - works
     at arbitrary corpus size (never hardcoded to the 166 seeded items)."""
     items = []
     for rid, r in RESOURCE_CACHE.items():
@@ -798,7 +795,7 @@ class VoiceRequest(BaseModel):
 
 @app.post("/api/voice")
 def api_voice(req: VoiceRequest):
-    """Hero 4 — language-matched native ElevenLabs voice, eleven_multilingual_v2."""
+    """Hero 4 - language-matched native ElevenLabs voice, eleven_multilingual_v2."""
     if not ELEVENLABS_API_KEY:
         raise HTTPException(503, "voice not configured")
     voice_id = VOICE_MAP.get(req.lang, VOICE_MAP["en"])
