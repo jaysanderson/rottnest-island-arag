@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>See & Do — Wadjemup / Rottnest Island</title>
+<link rel="stylesheet" href="/static/brand/arag-tokens.css" />
+<link rel="stylesheet" href="/static/brand/progress-header.css" />
+<link rel="stylesheet" href="/static/css/rottnest.css" />
+</head>
+<body class="rw-body">
+
+<section class="rw-section-dark" style="padding:56px 0 40px;">
+  <div class="rw-container">
+    <div class="rw-eyebrow" style="color:#FDBC3F;">See & Do</div>
+    <h1 class="rw-h1" style="color:white; margin-top:8px;">Who are you visiting as?</h1>
+    <p class="rw-lead" style="color:#AEE2E9; max-width:56ch;">Pick a traveller type and the island's real content re-ranks — pure retrieval, nothing written for you. No two people see the same order.</p>
+    <div class="rw-persona-row rw-mt-24" id="rw-persona-row">
+      <button class="rw-persona-pill" style="border-color:#AEE2E9; color:white;" data-persona="family">👨‍👩‍👧 Family with kids</button>
+      <button class="rw-persona-pill" style="border-color:#AEE2E9; color:white;" data-persona="heritage">🏛️ History & heritage</button>
+      <button class="rw-persona-pill" style="border-color:#AEE2E9; color:white;" data-persona="active">🚴 Active & adventure</button>
+      <button class="rw-persona-pill" style="border-color:#AEE2E9; color:white;" data-persona="relax">🌅 Relaxation & nature</button>
+      <button class="rw-persona-pill" style="border-color:#AEE2E9; color:white;" data-persona="quokka">🐾 First-time quokka spotter</button>
+    </div>
+  </div>
+</section>
+
+<section class="rw-section rw-section-sand">
+  <div class="rw-container">
+    <div id="rw-seedo-status" class="rw-eyebrow" style="margin-bottom:16px;"></div>
+    <div class="rw-grid rw-grid-3" id="rw-seedo-grid"></div>
+  </div>
+</section>
+
+<script>window.RW_PAGE = {
+  nav: 'see-do',
+  reveal: {
+    title: 'How See & Do works',
+    what: 'Choosing a traveller type re-ranks the SAME 166 real Wadjemup pages by relevance to that persona — nothing is written or rewritten, only re-ordered.',
+    flow: [
+      {label:'Persona selected', detail:'e.g. "family with kids"'},
+      {label:'App proxy', detail:'maps persona to a real retrieval query'},
+      {label:'ARAG /find', detail:'pure semantic retrieval, no generation — the re-ranked content IS the answer'},
+      {label:'Re-ranked grid', detail:'real thumbnails + DA-generated hooks'},
+    ],
+    why: 'A visitor sees the island through their own trip\'s lens in one tap — no filters to configure, no generic "top 10" list built for nobody.',
+  }
+};</script>
+<script src="/static/js/shared.js"></script>
+<script>
+(function(){
+  const grid = document.getElementById('rw-seedo-grid');
+  const status = document.getElementById('rw-seedo-status');
+  const pills = document.querySelectorAll('#rw-persona-row .rw-persona-pill');
+
+  function skeletons(n) {
+    return Array.from({length:n}).map(() => `
+      <div class="rw-card"><div class="rw-skeleton" style="aspect-ratio:16/10;"></div>
+      <div style="padding:16px;"><div class="rw-skeleton" style="height:16px;width:70%;margin-bottom:8px;"></div><div class="rw-skeleton" style="height:14px;width:90%;"></div></div></div>
+    `).join('');
+  }
+
+  async function load(persona) {
+    pills.forEach(p => p.classList.toggle('rw-active', p.dataset.persona === persona));
+    pills.forEach(p => { p.style.background = p.dataset.persona === persona ? 'rgba(255,255,255,0.25)' : 'transparent'; });
+    status.textContent = 'Re-ranking for this traveller…';
+    grid.innerHTML = skeletons(6);
+    const res = await fetch('/api/see-do', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({persona}) });
+    const data = await res.json();
+    status.textContent = `Showing ${data.items.length} results, re-ranked for: ${data.persona_label}`;
+    grid.innerHTML = data.items.map(item => `
+      <a href="/r/${item.resource_id}" class="rw-card rw-catalog-card rw-link-plain">
+        <img class="rw-catalog-thumb" src="/api/thumbnail/${item.resource_id}" alt="${item.title}" loading="lazy" onerror="this.style.display='none'" />
+        <div class="rw-catalog-body">
+          <div class="rw-eyebrow" style="font-size:0.68rem;">${item.category || 'Explore'}</div>
+          <h3 class="rw-catalog-title">${item.title.replace(' | Rottnest Island','')}</h3>
+          ${item.hook ? `<p class="rw-catalog-hook">${item.hook}</p>` : ''}
+          ${item.highlights && item.highlights.length ? `<ul class="rw-catalog-highlights">${item.highlights.map(h=>`<li>${h}</li>`).join('')}</ul>` : ''}
+          <div class="rw-catalog-chips">${(item.chips||[]).slice(0,3).map(c=>`<span class="rw-chip">${c}</span>`).join('')}</div>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  pills.forEach(p => p.addEventListener('click', () => load(p.dataset.persona)));
+  load('family');
+})();
+</script>
+</body>
+</html>

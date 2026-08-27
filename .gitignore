@@ -1,0 +1,12 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/
+*.log
+
+# Teammate de-risk/research scratch artifacts (raw dumps, exploratory scripts) -
+# kept locally for reference, not part of the shippable app source.
+/derisk/
+/research/

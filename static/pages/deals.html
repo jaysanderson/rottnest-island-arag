@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Deals — Wadjemup / Rottnest Island</title>
+<link rel="stylesheet" href="/static/brand/arag-tokens.css" />
+<link rel="stylesheet" href="/static/brand/progress-header.css" />
+<link rel="stylesheet" href="/static/css/rottnest.css" />
+</head>
+<body class="rw-body">
+
+<section class="rw-section-navy" style="padding:56px 0 40px;">
+  <div class="rw-container">
+    <div class="rw-eyebrow" style="color:#FDBC3F;">Deals</div>
+    <h1 class="rw-h1" style="color:white; margin-top:8px;">Offers, subsidies & seasonal savings.</h1>
+    <p class="rw-lead" style="color:#AEE2E9; max-width:56ch;">Including the Overnight Camp Subsidy program — ask a question and get the real terms, not a guess.</p>
+  </div>
+</section>
+
+<section class="rw-section rw-section-white">
+  <div class="rw-container" style="max-width:820px;">
+    <div class="rw-flex rw-gap-12">
+      <input class="rw-input" id="rw-deals-q" placeholder="e.g. Am I eligible for the overnight camp subsidy?" />
+      <button class="rw-btn rw-btn-primary" id="rw-deals-ask" type="button">Ask</button>
+    </div>
+    <div id="rw-deals-answer" class="rw-mt-24"></div>
+  </div>
+</section>
+
+<section class="rw-section rw-section-sand">
+  <div class="rw-container">
+    <div id="rw-deals-grid" class="rw-grid rw-grid-3"></div>
+  </div>
+</section>
+
+<script>window.RW_PAGE = {
+  nav: 'deals',
+  reveal: {
+    title: 'How the Deals page works',
+    what: 'Deals and subsidy questions are grounded in the island\'s own current offer and subsidy-program pages — the catalogue below lists them via /find, generated copy same as every other listing.',
+    flow: [
+      {label:'Your question'},
+      {label:'ARAG /ask', detail:'scoped to real deals/subsidy pages'},
+      {label:'Cited terms', detail:'never an invented price or eligibility rule'},
+    ],
+    why: 'Subsidy terms and offer conditions are exactly the kind of content that\'s costly to get wrong — grounding means the concierge can\'t improvise an eligibility rule that doesn\'t exist.',
+  }
+};</script>
+<script src="/static/js/shared.js"></script>
+<script src="/static/js/i18n.js"></script>
+<script src="/static/js/ask-widget.js"></script>
+<script>
+  RWAsk.wire('#rw-deals-q', '#rw-deals-ask', '#rw-deals-answer', { getLang: () => 'en' });
+
+  const grid = document.getElementById('rw-deals-grid');
+  fetch('/api/catalog?q=' + encodeURIComponent('subsidy') + '&limit=20')
+    .then(r => r.json())
+    .then(async (subsidyData) => {
+      const dealsRes = await fetch('/api/catalog?q=' + encodeURIComponent('deal') + '&limit=10');
+      const dealsData = await dealsRes.json();
+      const merged = [...dealsData.items, ...subsidyData.items];
+      grid.innerHTML = merged.map(item => `
+        <a href="/r/${item.resource_id}" class="rw-card rw-catalog-card rw-link-plain">
+          <img class="rw-catalog-thumb" src="/api/thumbnail/${item.resource_id}" alt="${item.title}" loading="lazy" onerror="this.style.display='none'" />
+          <div class="rw-catalog-body">
+            <h3 class="rw-catalog-title">${item.title.replace(' | Rottnest Island','')}</h3>
+            ${item.hook ? `<p class="rw-catalog-hook">${item.hook}</p>` : ''}
+          </div>
+        </a>
+      `).join('') || '<p>No current deals content found.</p>';
+    });
+</script>
+</body>
+</html>

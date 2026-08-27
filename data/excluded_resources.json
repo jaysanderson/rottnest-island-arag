@@ -1,0 +1,150 @@
+{
+  "excluded": [
+    {
+      "id": "023c29a1a7274a75a053426ada3370c4",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "0baf4d1e331b4571aedd6d0c36e9f41c",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "2ecc7a30a9714d9aa34f61a7f7180fd4",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "32d55d40165b4527a3d0fbf6e8ee6954",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "439cb14526674c22a9f4df4475bd6049",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "52dbd6ef56f040e3b0871696dddb221f",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "572c021186bb4149a8bea4aaa0e86c04",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "5f98654e6d8b49efb58f97ffd2035084",
+      "title": "Rottnest Island | Samphire Rottnest",
+      "reason": "duplicate-ingest",
+      "canonical_id": "0679d4602b5d4b08a5fcaa9bd3fbc4ad"
+    },
+    {
+      "id": "6c98579e5d38442a82942354c8cd7d62",
+      "title": "Rottnest Island | Stay Rottnest Hostel & Dorms",
+      "reason": "duplicate-ingest",
+      "canonical_id": "1488ef9ad991461ea3ca4283b518a538"
+    },
+    {
+      "id": "7501dd7a72e04a6ea8701ecfee04b7cd",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "7f0effdcd6414dbf9698cef833418dba",
+      "title": "Sustainability | Rottnest Island",
+      "reason": "duplicate-ingest",
+      "canonical_id": "7ede1a642fce45b6a086997e3a29e983"
+    },
+    {
+      "id": "808076b7f3984dd9bb012b3800d2d76c",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "8348099836354018a388bcb96d0b59fc",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "87dc37d182da40c99fd95bebcfc28f30",
+      "title": "Rottnest Island | The Lodge Wadjemup",
+      "reason": "duplicate-ingest",
+      "canonical_id": "273e65a8eb034a32b2a329a2ea3d6b05"
+    },
+    {
+      "id": "89556492cc904e5d80f51c190bf9f454",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "8f94194d69e745899bf368acba160ded",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "aa415d86bc38489d93339b44f3282d84",
+      "title": "Sitemap | Rottnest Island",
+      "reason": "duplicate-ingest",
+      "canonical_id": "44c7fb3695704ba7941be48b77199dee"
+    },
+    {
+      "id": "bb3b3395553f4fd397c8423aeaaf5729",
+      "title": "Rottnest Island | Discovery Resorts - Rottnest Island",
+      "reason": "duplicate-ingest",
+      "canonical_id": "af8642bbe731413f986abe3393922f29"
+    },
+    {
+      "id": "bc46b4e976a24e039e23c81a5878d76c",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "c584dc6d32f249439395c9589cc2ea1a",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "ccaf6010153944c89dcbda3d4e73f03a",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "ef2da084e0e447cab9b9c15d201a138b",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    },
+    {
+      "id": "fe0de55e255e45f3a930a79746bcd306",
+      "title": "Just a moment...",
+      "reason": "cloudflare-junk"
+    }
+  ],
+  "excluded_ids": [
+    "023c29a1a7274a75a053426ada3370c4",
+    "0baf4d1e331b4571aedd6d0c36e9f41c",
+    "2ecc7a30a9714d9aa34f61a7f7180fd4",
+    "32d55d40165b4527a3d0fbf6e8ee6954",
+    "439cb14526674c22a9f4df4475bd6049",
+    "52dbd6ef56f040e3b0871696dddb221f",
+    "572c021186bb4149a8bea4aaa0e86c04",
+    "5f98654e6d8b49efb58f97ffd2035084",
+    "6c98579e5d38442a82942354c8cd7d62",
+    "7501dd7a72e04a6ea8701ecfee04b7cd",
+    "7f0effdcd6414dbf9698cef833418dba",
+    "808076b7f3984dd9bb012b3800d2d76c",
+    "8348099836354018a388bcb96d0b59fc",
+    "87dc37d182da40c99fd95bebcfc28f30",
+    "89556492cc904e5d80f51c190bf9f454",
+    "8f94194d69e745899bf368acba160ded",
+    "aa415d86bc38489d93339b44f3282d84",
+    "bb3b3395553f4fd397c8423aeaaf5729",
+    "bc46b4e976a24e039e23c81a5878d76c",
+    "c584dc6d32f249439395c9589cc2ea1a",
+    "ccaf6010153944c89dcbda3d4e73f03a",
+    "ef2da084e0e447cab9b9c15d201a138b",
+    "fe0de55e255e45f3a930a79746bcd306"
+  ]
+}

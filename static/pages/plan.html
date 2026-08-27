@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Plan Your Trip — Wadjemup / Rottnest Island</title>
+<link rel="stylesheet" href="/static/brand/arag-tokens.css" />
+<link rel="stylesheet" href="/static/brand/progress-header.css" />
+<link rel="stylesheet" href="/static/css/rottnest.css" />
+<style>
+  .rw-plan-hero { position: relative; overflow: hidden; padding: 64px 0 48px; }
+  .rw-plan-form { background: white; border-radius: 18px; box-shadow: var(--rw-shadow-lift); padding: 28px; margin-top: -70px; position: relative; z-index: 5; }
+  .rw-day-card { background: white; border-radius: var(--rw-radius-lg); box-shadow: var(--rw-shadow-card); padding: 26px; }
+  .rw-itin-item { display: grid; grid-template-columns: 90px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid rgba(16,52,73,0.08); }
+  .rw-itin-item:last-child { border-bottom: none; }
+  .rw-itin-time { font-family: var(--rw-font-display); text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.75rem; font-weight: 700; color: var(--rw-orange); }
+  .rw-itin-activity { font-weight: 600; color: var(--rw-navy); }
+  .rw-itin-why { font-size: 0.85rem; color: var(--rw-teal-darker); margin-top: 4px; }
+  .rw-itin-src { display:inline-flex; align-items:center; gap:6px; margin-top:8px; font-size: 0.78rem; font-weight:600; color: var(--rw-teal); text-decoration:none; }
+</style>
+</head>
+<body class="rw-body">
+
+<section class="rw-plan-hero rw-section-navy">
+  <svg class="rw-motif" style="top:-60px; left:-60px; width:420px;" viewBox="0 0 420 420" fill="none">
+    <path d="M20 300 Q120 220 210 260 Q300 300 400 240" stroke="#AEE2E9" stroke-width="1.5" fill="none"/>
+    <path d="M20 340 Q120 260 210 300 Q300 340 400 280" stroke="#AEE2E9" stroke-width="1.5" fill="none"/>
+  </svg>
+  <div class="rw-container" style="position:relative;">
+    <div class="rw-eyebrow" style="color:#FDBC3F;">The genuine upgrade — Rottnest's real site has no trip planner</div>
+    <h1 class="rw-h1" style="color:white; margin-top:8px;">Tell us how you want to island. We'll build the days.</h1>
+    <p class="rw-lead" style="color:#AEE2E9; max-width:60ch;">Every activity you get back is cited to a real Wadjemup page — the model can only recommend what genuinely exists. Nothing here is invented.</p>
+  </div>
+</section>
+
+<div class="rw-container">
+  <div class="rw-plan-form">
+    <div class="rw-grid rw-grid-3" style="gap:18px;">
+      <div>
+        <label class="rw-eyebrow" style="display:block; margin-bottom:6px;">Days</label>
+        <select class="rw-select" id="rw-plan-days">
+          <option value="1">1 day</option>
+          <option value="2" selected>2 days</option>
+          <option value="3">3 days</option>
+        </select>
+      </div>
+      <div>
+        <label class="rw-eyebrow" style="display:block; margin-bottom:6px;">Style</label>
+        <select class="rw-select" id="rw-plan-style">
+          <option value="active adventure, snorkelling, hiking, cycling">Active & adventure</option>
+          <option value="relaxed family beach days">Family & beaches</option>
+          <option value="culture and Aboriginal history focused">Culture & heritage</option>
+          <option value="romantic, slow, quiet spots">Romantic & relaxed</option>
+        </select>
+      </div>
+      <div>
+        <label class="rw-eyebrow" style="display:block; margin-bottom:6px;">Any constraints?</label>
+        <input class="rw-input" id="rw-plan-constraints" placeholder="e.g. no long walks, travelling with a toddler" />
+      </div>
+    </div>
+    <button class="rw-btn rw-btn-primary rw-mt-16" id="rw-plan-go" type="button">Build My Itinerary</button>
+  </div>
+</div>
+
+<section class="rw-section rw-section-sand">
+  <div class="rw-container">
+    <div id="rw-plan-note" class="rw-body-text" style="text-align:center;"></div>
+    <div id="rw-plan-result"></div>
+
+    <div id="rw-plan-refine-wrap" style="display:none; max-width:700px; margin:32px auto 0;">
+      <h3 class="rw-h3">Refine it</h3>
+      <div class="rw-flex rw-gap-12">
+        <input class="rw-input" id="rw-plan-refine" placeholder="e.g. swap day 2 for something quieter" />
+        <button class="rw-btn rw-btn-secondary" id="rw-plan-refine-go" type="button">Refine</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>window.RW_PAGE = {
+  nav: 'plan',
+  reveal: {
+    title: 'How the itinerary planner works — the mandatory honesty pattern',
+    what: 'This is the flagship feature: a trip planner built entirely from real, retrieved Wadjemup content, with a structural guarantee against fabricated recommendations.',
+    flow: [
+      {label:'Your brief', detail:'days, style, constraints'},
+      {label:'ARAG /find', detail:'retrieves real candidate pages for that brief — their titles become the ONLY allowed sources'},
+      {label:'Enum-constrained /ask', detail:'answer_json_schema forces every "source" field to be one of those real titles — the model literally cannot invent a source'},
+      {label:'Itinerary', detail:'each item deep-links to its real source page'},
+    ],
+    why: 'Early testing found that a free-text "source" field lets a model fabricate a plausible-sounding page that doesn\'t exist — this schema-enum pattern closes that gap structurally, not by asking nicely. It\'s the difference between a demo and something you could actually ship to visitors.',
+  }
+};</script>
+<script src="/static/js/shared.js"></script>
+<script>
+(function(){
+  const goBtn = document.getElementById('rw-plan-go');
+  const refineBtn = document.getElementById('rw-plan-refine-go');
+  const note = document.getElementById('rw-plan-note');
+  const result = document.getElementById('rw-plan-result');
+  const refineWrap = document.getElementById('rw-plan-refine-wrap');
+  let lastPayload = null;
+
+  function dayThemeIcon(i) { return ['🌅','🏝️','🌇'][i % 3]; }
+
+  function render(obj) {
+    if (!obj.days || !obj.days.length) {
+      result.innerHTML = `<p class="rw-body-text" style="text-align:center;">${obj.note || 'Nothing came back — try adjusting your brief.'}</p>`;
+      refineWrap.style.display = 'none';
+      return;
+    }
+    result.innerHTML = `<div class="rw-grid" style="gap:24px; margin-top:8px;">` + obj.days.map(day => `
+      <div class="rw-day-card">
+        <div class="rw-eyebrow">Day ${day.day_number} ${dayThemeIcon(day.day_number-1)}</div>
+        <h3 class="rw-h3" style="margin-top:6px;">${day.theme || ''}</h3>
+        <div class="rw-mt-16">
+          ${day.items.map(item => `
+            <div class="rw-itin-item">
+              <div class="rw-itin-time">${item.time_of_day}</div>
+              <div>
+                <div class="rw-itin-activity">${item.activity}</div>
+                <div class="rw-itin-why">${item.why}</div>
+                ${item.resource_id ? `<a class="rw-itin-src" href="/r/${item.resource_id}">📍 ${item.source_title.replace(' | Rottnest Island','')} →</a>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('') + `</div>`;
+    refineWrap.style.display = 'block';
+  }
+
+  async function build(payload) {
+    note.textContent = 'Retrieving real Wadjemup content, then building your days…';
+    result.innerHTML = Array.from({length:2}).map(()=>`<div class="rw-day-card"><div class="rw-skeleton" style="height:20px;width:40%;margin-bottom:14px;"></div><div class="rw-skeleton" style="height:60px;"></div></div>`).join('<div style="height:20px"></div>');
+    goBtn.disabled = true;
+    try {
+      const res = await fetch('/api/itinerary', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const data = await res.json();
+      note.textContent = '';
+      render(data);
+      lastPayload = payload;
+    } catch(e) {
+      note.textContent = 'Something went wrong building your itinerary. Please try again.';
+      result.innerHTML = '';
+    } finally {
+      goBtn.disabled = false;
+    }
+  }
+
+  goBtn.addEventListener('click', () => {
+    build({
+      days: parseInt(document.getElementById('rw-plan-days').value, 10),
+      style: document.getElementById('rw-plan-style').value,
+      constraints: document.getElementById('rw-plan-constraints').value,
+    });
+  });
+
+  refineBtn.addEventListener('click', () => {
+    const refine = document.getElementById('rw-plan-refine').value.trim();
+    if (!refine || !lastPayload) return;
+    build(Object.assign({}, lastPayload, { refine }));
+  });
+
+  build({ days: 2, style: document.getElementById('rw-plan-style').value, constraints: '' });
+})();
+</script>
+</body>
+</html>

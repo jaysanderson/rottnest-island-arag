@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Visit — Wadjemup / Rottnest Island</title>
+<link rel="stylesheet" href="/static/brand/arag-tokens.css" />
+<link rel="stylesheet" href="/static/brand/progress-header.css" />
+<link rel="stylesheet" href="/static/css/rottnest.css" />
+</head>
+<body class="rw-body">
+
+<section class="rw-section-dark" style="padding:56px 0 40px;">
+  <div class="rw-container">
+    <div class="rw-eyebrow" style="color:#FDBC3F;">Visit</div>
+    <h1 class="rw-h1" style="color:white; margin-top:8px;">Getting here, getting around.</h1>
+    <p class="rw-lead" style="color:#AEE2E9; max-width:56ch;">Ferry, air, bike, bus, on foot — ask a real logistics question and get a grounded answer, not a PDF timetable to hunt through.</p>
+  </div>
+</section>
+
+<section class="rw-section rw-section-white">
+  <div class="rw-container" style="max-width:820px;">
+    <div class="rw-flex rw-gap-12" style="flex-wrap:wrap;">
+      <button class="rw-chip" data-q="What are my options for getting to Rottnest Island?" type="button" style="cursor:pointer;border:none;">Getting here</button>
+      <button class="rw-chip" data-q="How do I get around the island once I arrive?" type="button" style="cursor:pointer;border:none;">Getting around</button>
+      <button class="rw-chip" data-q="What accessibility support is available for visitors with mobility needs?" type="button" style="cursor:pointer;border:none;">Accessibility</button>
+      <button class="rw-chip" data-q="What should I pack and bring for a day trip?" type="button" style="cursor:pointer;border:none;">What to bring</button>
+    </div>
+    <div class="rw-flex rw-gap-12 rw-mt-24">
+      <input class="rw-input" id="rw-visit-q" placeholder="Ask about ferries, flights, bikes, buses, accessibility..." />
+      <button class="rw-btn rw-btn-primary" id="rw-visit-ask" type="button">Ask</button>
+    </div>
+    <div id="rw-visit-answer" class="rw-mt-24"></div>
+  </div>
+</section>
+
+<section class="rw-section rw-section-sand">
+  <div class="rw-container" style="max-width:820px; text-align:center;">
+    <h2 class="rw-h2">Know how you're getting here — now let ARAG plan the rest.</h2>
+    <a href="/plan" class="rw-btn rw-btn-primary rw-mt-16">Build My Itinerary</a>
+  </div>
+</section>
+
+<script>window.RW_PAGE = {
+  nav: 'visit',
+  reveal: {
+    title: 'How the Visit assistant works',
+    what: 'Logistics questions (ferry, flights, bikes, accessibility) are answered from the island\'s own real transport and access pages, cited back to source.',
+    flow: [
+      {label:'Your question', detail:'or a quick-ask chip'},
+      {label:'App proxy'},
+      {label:'ARAG /ask', detail:'neighbouring-paragraph context, scoped to 166 real pages'},
+      {label:'Cited answer'},
+    ],
+    why: 'Practical logistics are the #1 reason a visitor abandons planning — a fast, accurate answer here is the difference between a booking and a bounce.',
+    gaps: 'Accessibility coverage on the real site is currently thin (one page) — if a question genuinely can\'t be grounded, the concierge says so honestly rather than guessing.',
+  }
+};</script>
+<script src="/static/js/shared.js"></script>
+<script src="/static/js/i18n.js"></script>
+<script src="/static/js/ask-widget.js"></script>
+<script>
+  RWAsk.wire('#rw-visit-q', '#rw-visit-ask', '#rw-visit-answer', { getLang: () => 'en' });
+  document.querySelectorAll('[data-q]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('rw-visit-q').value = btn.dataset.q;
+      document.getElementById('rw-visit-ask').click();
+    });
+  });
+</script>
+</body>
+</html>

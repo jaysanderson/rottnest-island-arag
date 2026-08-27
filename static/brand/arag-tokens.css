@@ -1,0 +1,308 @@
+/* ==========================================================================
+   Progress Agentic RAG — Brand Tokens
+   Drop into any demo UI, HTML artifact, or landing page.
+   Use the semantic tokens (--arag-*) rather than raw palette values so that
+   contrast-safe pairings are preserved automatically.
+   ========================================================================== */
+
+:root {
+  /* --- Raw palette: primary --- */
+  --arag-blue-p1-shade: #00123C;  /* Blue P1 + 45% Shade */
+  --arag-blue-p2:       #2B2BB2;  /* Pantone 2126 C */
+
+  /* --- Raw palette: secondary --- */
+  --arag-blue-p3:       #4B4BF7;  /* 2726 C */
+  --arag-blue-p4:       #5777EA;  /* 2718 C */
+  --arag-blue-p5:       #DCECFF;  /* 2708 C */
+  --arag-green-p2:      #00B563;  /* 2251 C */
+  --arag-green-p3:      #00D364;  /* 2420 C */
+  --arag-green-s3:      #90EF8E;  /* 708 C  */
+  --arag-green-s4:      #CDFFCA;  /* 7485 C */
+  --arag-red-s3:        #FF9AA8;  /* 708 C  */
+  --arag-yellow-s1:     #FFD000;  /* 109 C  */
+
+  /* --- Raw palette: recommended backgrounds --- */
+  --arag-blue-p1:       #00216B;  /* 281 C  */
+  --arag-grey-s4:       #F4FAFF;
+
+  /* --- Typography ---
+     Progress Sans is TWO fonts. Display leads, Text supports.
+     Arial is the only approved substitute — do not insert Helvetica,
+     Inter, or a system stack as an intermediate fallback.
+     Roboto Mono is for code only, never decorative. */
+  --arag-font-display: "Progress Sans Display", Arial, sans-serif;
+  --arag-font-text:    "Progress Sans Text", Arial, sans-serif;
+  --arag-font-mono:    "Roboto Mono", monospace;
+
+  --arag-size-display: 3.5rem;    /* 56px — Display */
+  --arag-size-h1:      2.5rem;    /* 40px — Display */
+  --arag-size-h2:      2rem;      /* 32px — Display */
+  --arag-size-h3:      1.5rem;    /* 24px — Display */
+  --arag-size-lead:    1.25rem;   /* 20px — Text; Display/Text switchover sits here */
+  --arag-size-body-lg: 1.125rem;  /* 18px — Text */
+  --arag-size-body:    1rem;      /* 16px — Text */
+  --arag-size-caption: 0.875rem;  /* 14px — Text */
+
+  /* Display tightens as it grows; Text loosens as it shrinks. */
+  --arag-track-display: -0.02em;
+  --arag-track-h1:      -0.015em;
+  --arag-track-h2:      -0.01em;
+  --arag-track-h3:      -0.005em;
+  --arag-track-body:     0.01em;
+  --arag-track-caption:  0.015em;
+
+  --arag-lh-tight: 1.05;
+  --arag-lh-head:  1.2;
+  --arag-lh-body:  1.6;
+
+  --arag-weight-light:   300;
+  --arag-weight-regular: 400;
+  --arag-weight-medium:  500;
+  --arag-weight-bold:    700;
+
+  /* --- Geometry: matches the Hex Loop isometric grid --- */
+  --arag-angle: 30deg;
+  --arag-radius: 6px;
+  --arag-radius-lg: 12px;
+
+  /* ======================================================================
+     SEMANTIC TOKENS — LIGHT SURFACE (default)
+     Every foreground token below clears WCAG AA on --arag-surface.
+     Greens are deliberately absent from text roles: Green P2 is 2.56:1
+     on this surface and Green P3 is 1.90:1. Both fail. They are fills only.
+     ====================================================================== */
+  --arag-surface:          var(--arag-grey-s4);
+  --arag-surface-raised:   #FFFFFF;
+  --arag-text:             #000000;                    /* 20.4:1 — type is black by default */
+  --arag-text-muted:       #3D3D42;
+  --arag-heading:          #000000;
+  --arag-link:             var(--arag-blue-p2);        /*  9.55:1 — color as selective accent */
+  --arag-border:           #C9D9EE;
+
+  --arag-action-bg:        var(--arag-blue-p2);
+  --arag-action-fg:        #FFFFFF;                    /* 10.04:1 */
+  --arag-action-hover-bg:  var(--arag-blue-p1);
+
+  --arag-action-alt-bg:    transparent;
+  --arag-action-alt-fg:    var(--arag-blue-p2);
+  --arag-action-alt-brd:   var(--arag-blue-p2);
+
+  /* Decorative fills only — never text, never icon strokes, never borders */
+  --arag-accent-fill:      var(--arag-green-p3);
+  --arag-accent-fill-soft: var(--arag-green-s4);
+  --arag-accent-fill-blue: var(--arag-blue-p5);
+
+  /* Semantic states on light: dark text, tinted fill. Never rely on hue alone. */
+  --arag-success-fg:       #00663A;
+  --arag-success-bg:       var(--arag-green-s4);
+  --arag-warning-fg:       #6B4E00;
+  --arag-warning-bg:       #FFF3C2;
+  --arag-error-fg:         #8C1F2E;
+  --arag-error-bg:         #FFE3E7;
+}
+
+/* ========================================================================
+   DARK SURFACE
+   Apply to a section wrapper: <section class="arag-dark"> ... </section>
+   This is where the greens earn their contrast — Green P3 is 7.34:1 here.
+   ======================================================================== */
+.arag-dark {
+  --arag-surface:          var(--arag-blue-p1);
+  --arag-surface-raised:   var(--arag-blue-p1-shade);
+  --arag-text:             #FFFFFF;                    /* 14.69:1 — type is white by default */
+  --arag-text-muted:       var(--arag-blue-p5);        /* 12.23:1 */
+  --arag-heading:          #FFFFFF;
+  --arag-link:             var(--arag-green-s3);       /* 10.44:1 */
+  --arag-border:           #143A87;
+
+  --arag-action-bg:        var(--arag-green-p3);
+  --arag-action-fg:        var(--arag-blue-p1-shade);  /*  9.12:1 */
+  --arag-action-hover-bg:  var(--arag-green-p2);
+
+  --arag-action-alt-bg:    transparent;
+  --arag-action-alt-fg:    var(--arag-blue-p5);
+  --arag-action-alt-brd:   var(--arag-blue-p5);
+
+  --arag-success-fg:       var(--arag-green-p3);       /*  7.34:1 */
+  --arag-success-bg:       transparent;
+  --arag-warning-fg:       var(--arag-yellow-s1);      /*  9.98:1 */
+  --arag-warning-bg:       transparent;
+  --arag-error-fg:         var(--arag-red-s3);         /*  7.30:1 */
+  --arag-error-bg:         transparent;
+
+  background: var(--arag-surface);
+  color: var(--arag-text);
+}
+
+/* ========================================================================
+   BASE ELEMENTS
+   ======================================================================== */
+body {
+  font-family: var(--arag-font-text);
+  font-size: var(--arag-size-body);
+  letter-spacing: var(--arag-track-body);
+  line-height: var(--arag-lh-body);
+  background: var(--arag-surface);
+  color: var(--arag-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Headings use the Display face. Body, UI, captions use Text.
+   Never mix the two inside one string. */
+h1, h2, h3, h4 {
+  font-family: var(--arag-font-display);
+  color: var(--arag-heading);
+  line-height: var(--arag-lh-head);
+  margin: 0 0 0.5em;
+}
+h1 { font-size: var(--arag-size-h1); font-weight: var(--arag-weight-bold);   letter-spacing: var(--arag-track-h1); }
+h2 { font-size: var(--arag-size-h2); font-weight: var(--arag-weight-medium); letter-spacing: var(--arag-track-h2); }
+h3 { font-size: var(--arag-size-h3); font-weight: var(--arag-weight-medium); letter-spacing: var(--arag-track-h3); }
+
+.arag-display {
+  font-family: var(--arag-font-display);
+  font-size: var(--arag-size-display);
+  font-weight: var(--arag-weight-bold);
+  line-height: var(--arag-lh-tight);
+  letter-spacing: var(--arag-track-display);
+  max-width: 14ch;   /* forces the tight stacked break used in brand assets */
+}
+
+/* Lead paragraph: Text face, Light weight. Do not pair Light with
+   Regular inside the same block — adjacent weights never mix. */
+.arag-lead {
+  font-family: var(--arag-font-text);
+  font-size: var(--arag-size-lead);
+  font-weight: var(--arag-weight-light);
+  line-height: 1.5;
+}
+
+.arag-caption {
+  font-size: var(--arag-size-caption);
+  letter-spacing: var(--arag-track-caption);
+  line-height: 1.4;
+  color: var(--arag-text-muted);
+}
+
+/* Roboto Mono is restricted to code, syntax, and CLI examples. */
+code, pre, kbd, samp {
+  font-family: var(--arag-font-mono);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+a { color: var(--arag-link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+.arag-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  font: var(--arag-weight-medium) var(--arag-size-body) / 1 var(--arag-font-text);
+  border: 1px solid transparent;
+  border-radius: var(--arag-radius);
+  background: var(--arag-action-bg);
+  color: var(--arag-action-fg);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.arag-btn:hover { background: var(--arag-action-hover-bg); }
+
+.arag-btn--secondary {
+  background: var(--arag-action-alt-bg);
+  color: var(--arag-action-alt-fg);
+  border-color: var(--arag-action-alt-brd);
+}
+
+.arag-card {
+  background: var(--arag-surface-raised);
+  border: 1px solid var(--arag-border);
+  border-radius: var(--arag-radius-lg);
+  padding: 1.5rem;
+}
+
+/* Visible focus is required — do not remove without an equivalent replacement */
+:focus-visible { outline: 3px solid var(--arag-blue-p3); outline-offset: 2px; }
+
+/* 30° diagonal field, matching the Hex Loop isometric grid.
+   Used for hero sections in the reference brand assets. */
+.arag-diagonal {
+  background: linear-gradient(
+    calc(90deg - var(--arag-angle)),
+    var(--arag-blue-p1-shade) 0%,
+    var(--arag-blue-p1-shade) 48%,
+    var(--arag-blue-p2) 48%,
+    var(--arag-blue-p2) 100%
+  );
+}
+
+/* Progress Sans is proprietary and must not be redistributed. Load it only
+   from an official Progress-supplied source in an authorized context; where
+   that isn't possible the Arial fallback above is the compliant path.
+   Do not bundle font files into shared repos or partner deliverables. */
+
+/* ========================================================================
+   LOGO
+   Official artwork lives in assets/logos/ — reference those files, never
+   redraw the lockup. The symbol green is #5CE500 (Progress corporate),
+   NOT an Agentic RAG palette green.
+
+   Minimum height and clear space are brand requirements, not suggestions.
+   Clear space equals HALF the height of the Progress symbol: 0.422x the
+   horizontal lockup height, 0.213x the stacked lockup height.
+   The 75px minimum is the stricter of two conflicting published minimums
+   (product-specific 75px vs. corporate 14px/46px) — use 75px.
+   ======================================================================== */
+--arag-logo-min-h: 75px;
+
+.arag-logo-h,
+.arag-logo-stacked {
+  width: auto;
+  display: block;
+  height: var(--arag-logo-min-h);
+  min-height: 75px;
+}
+
+/* Clear space is expressed in em so it scales with the logo height. */
+.arag-logo-h       { margin: 0.422em; }
+.arag-logo-stacked { margin: 0.213em; }
+
+/* Legacy alias */
+.arag-logo { min-height: 75px; height: 75px; width: auto; display: block; margin: 0.422em; }
+
+/* ========================================================================
+   HEX LOOP
+   Official artwork lives in assets/hex-loop/hex-loop-rgb.svg — reference
+   that file, never draw or approximate the device.
+
+   The Hex Loop is ALWAYS cropped, bleeding off an edge of the layout.
+   A complete hexagon sitting inside a slide or section is a violation.
+   Crop at the container level, not by editing the SVG.
+   ======================================================================== */
+
+/* Generic crop container — overflow hidden, position relative.
+   Place the Hex Loop SVG/img inside with position absolute, then
+   shift it so part bleeds off the desired edge. */
+.arag-hex-loop-crop {
+  position: relative;
+  overflow: hidden;
+}
+
+.arag-hex-loop-crop svg,
+.arag-hex-loop-crop img {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Preset crops — use one of these on the container to position
+   the Hex Loop toward a specific edge. Adjust width/top/left
+   in your layout as needed; these are starting points. */
+.arag-hex-loop-crop--right  svg,
+.arag-hex-loop-crop--right  img { right: -30%; top: 10%;  width: 60%; }
+
+.arag-hex-loop-crop--left   svg,
+.arag-hex-loop-crop--left   img { left: -30%;  top: 10%;  width: 60%; }
+
+.arag-hex-loop-crop--top-left svg,
+.arag-hex-loop-crop--top-left img { left: -25%;  top: -25%; width: 55%; }
+
+.arag-hex-loop-crop--bottom svg,
+.arag-hex-loop-crop--bottom img { bottom: -30%; left: 20%; width: 60%; top: auto; }

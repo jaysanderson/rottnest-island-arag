@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Source — Wadjemup / Rottnest Island</title>
+<link rel="stylesheet" href="/static/brand/arag-tokens.css" />
+<link rel="stylesheet" href="/static/brand/progress-header.css" />
+<link rel="stylesheet" href="/static/css/rottnest.css" />
+<style>
+  .rw-source-doc { background: white; border-radius: var(--rw-radius-lg); box-shadow: var(--rw-shadow-card); padding: 36px 40px; max-width: 780px; margin: -50px auto 0; position: relative; z-index: 5; }
+  .rw-source-body { white-space: pre-wrap; font-size: 0.98rem; line-height: 1.75; color: var(--rw-navy); }
+  @media (max-width: 640px) { .rw-source-doc { padding: 22px 20px; } }
+</style>
+</head>
+<body class="rw-body">
+
+<section class="rw-section-navy" style="padding:48px 0 40px;">
+  <div class="rw-container" style="max-width:780px;">
+    <a href="javascript:history.back()" class="rw-btn rw-btn-outline-light rw-btn-sm">← Back</a>
+    <div class="rw-eyebrow rw-mt-16" style="color:#FDBC3F;" id="rw-src-category">Source page</div>
+    <h1 class="rw-h1" style="color:white; margin-top:8px;" id="rw-src-title">Loading…</h1>
+    <div id="rw-src-chips" class="rw-flex rw-gap-8 rw-mt-16" style="flex-wrap:wrap;"></div>
+  </div>
+</section>
+
+<div class="rw-container">
+  <div class="rw-source-doc">
+    <a id="rw-src-live-link" href="#" target="_blank" rel="noopener" class="rw-btn rw-btn-outline rw-btn-sm" style="margin-bottom:20px;">View live page on rottnestisland.com ↗</a>
+    <div id="rw-src-highlight-note" class="rw-chip rw-chip-gold" style="display:none; margin-bottom:16px;">Highlighted below: the exact passage your answer was grounded on</div>
+    <div class="rw-source-body" id="rw-src-body">Loading…</div>
+  </div>
+</div>
+
+<div style="height:60px;"></div>
+
+<script>window.RW_PAGE = {
+  nav: '',
+  reveal: {
+    title: 'How citation highlighting works',
+    what: 'This is the real extracted text of the source page ARAG ingested. When you arrive from a cited answer, the exact paragraph that grounded it is highlighted and scrolled to automatically.',
+    flow: [
+      {label:'Citation clicked', detail:'carries the exact paragraph id + character offsets'},
+      {label:'App proxy', detail:'resolves the resource\'s cached extracted text'},
+      {label:'Render + highlight', detail:'the cited character range is marked and scrolled into view'},
+    ],
+    why: 'Trust means being able to check the receipts — every claim traces back to the exact sentence it came from, not just "somewhere in this document".',
+  }
+};</script>
+<script src="/static/js/shared.js"></script>
+<script>
+(function(){
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  const rid = parts[1];
+  const params = new URLSearchParams(window.location.search);
+  const paragraphId = params.get('p') || '';
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  fetch('/api/resource/' + rid).then(r => {
+    if (!r.ok) throw new Error('not found');
+    return r.json();
+  }).then(data => {
+    document.title = data.title + ' — Wadjemup';
+    document.getElementById('rw-src-title').textContent = data.title.replace(' | Rottnest Island','');
+    document.getElementById('rw-src-category').textContent = data.category || 'Source page';
+    document.getElementById('rw-src-live-link').href = data.uri || '#';
+    document.getElementById('rw-src-chips').innerHTML = (data.chips||[]).map(c => `<span class="rw-chip">${c}</span>`).join('');
+
+    let bodyHtml = escapeHtml(data.text || '');
+    // paragraphId shape: "<resourceId>/u/link/<start>-<end>"
+    const m = paragraphId.match(/\/(\d+)-(\d+)$/);
+    if (m) {
+      const start = parseInt(m[1], 10), end = parseInt(m[2], 10);
+      const raw = data.text || '';
+      if (end <= raw.length) {
+        const before = escapeHtml(raw.slice(0, start));
+        const mid = escapeHtml(raw.slice(start, end));
+        const after = escapeHtml(raw.slice(end));
+        bodyHtml = before + '<mark class="rw-highlight" id="rw-hl">' + mid + '</mark>' + after;
+        document.getElementById('rw-src-highlight-note').style.display = 'inline-flex';
+      }
+    }
+    document.getElementById('rw-src-body').innerHTML = bodyHtml;
+    const hl = document.getElementById('rw-hl');
+    if (hl) setTimeout(() => hl.scrollIntoView({behavior:'smooth', block:'center'}), 300);
+  }).catch(() => {
+    document.getElementById('rw-src-title').textContent = 'Page not found';
+    document.getElementById('rw-src-body').textContent = 'This source could not be loaded.';
+  });
+})();
+</script>
+</body>
+</html>

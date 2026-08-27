@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Learn — Wadjemup / Rottnest Island</title>
+<link rel="stylesheet" href="/static/brand/arag-tokens.css" />
+<link rel="stylesheet" href="/static/brand/progress-header.css" />
+<link rel="stylesheet" href="/static/css/rottnest.css" />
+</head>
+<body class="rw-body">
+
+<section class="rw-section-dark" style="padding:56px 0 40px;">
+  <div class="rw-container">
+    <div class="rw-eyebrow" style="color:#FDBC3F;">Learn</div>
+    <h1 class="rw-h1" style="color:white; margin-top:8px;">Culture, history — and a concierge who speaks your language.</h1>
+    <p class="rw-lead" style="color:#AEE2E9; max-width:60ch;">Wadjemup carries deep Noongar cultural significance alongside colonial and wartime history. Ask about any of it — in English, Mandarin, Japanese or French — and hear the answer spoken back natively.</p>
+    <div class="rw-flex rw-gap-12 rw-mt-24" style="flex-wrap:wrap;">
+      <span style="font-size:0.8rem; color:#AEE2E9; align-self:center;">Language:</span>
+      <button class="rw-lang-pill rw-persona-pill" data-lang="en" style="border-color:#AEE2E9;color:white;">English</button>
+      <button class="rw-lang-pill rw-persona-pill" data-lang="zh" style="border-color:#AEE2E9;color:white;">中文 Mandarin</button>
+      <button class="rw-lang-pill rw-persona-pill" data-lang="ja" style="border-color:#AEE2E9;color:white;">日本語 Japanese</button>
+      <button class="rw-lang-pill rw-persona-pill" data-lang="fr" style="border-color:#AEE2E9;color:white;">Français</button>
+    </div>
+  </div>
+</section>
+
+<section class="rw-section rw-section-white">
+  <div class="rw-container" style="max-width:820px;">
+    <div class="rw-flex rw-gap-12" style="flex-wrap:wrap;" id="rw-learn-suggestions"></div>
+    <div class="rw-flex rw-gap-12 rw-mt-24">
+      <input class="rw-input" id="rw-learn-q" placeholder="Ask anything about Wadjemup's culture and history..." />
+      <button class="rw-btn rw-btn-primary" id="rw-learn-ask" type="button">Ask</button>
+    </div>
+    <div id="rw-learn-answer" class="rw-mt-24"></div>
+  </div>
+</section>
+
+<section class="rw-section rw-section-sand">
+  <div class="rw-container">
+    <h2 class="rw-h2">Culture & history, in brief</h2>
+    <div class="rw-grid rw-grid-3 rw-mt-24" id="rw-learn-grid"></div>
+  </div>
+</section>
+
+<script>window.RW_PAGE = {
+  nav: 'learn',
+  reveal: {
+    title: 'How the multilingual concierge works',
+    what: 'The same 166 real Wadjemup pages ground answers in whichever of four languages you ask in — the model answers natively, it isn\'t translating a canned English reply.',
+    flow: [
+      {label:'Question', detail:'in EN / ZH / JA / FR'},
+      {label:'ARAG /ask', detail:'retrieves the real English source content, generates a native-language answer'},
+      {label:'Citations', detail:'always link to the real (English) source page'},
+      {label:'ElevenLabs voice', detail:'native speaker per language — eleven_multilingual_v2'},
+    ],
+    why: 'A Mandarin- or Japanese-speaking visitor gets the exact same grounded, trustworthy experience an English speaker gets — not a second-class "translate this page" button. Trust here comes from resolvable citations, not a raw per-language quality score (REMi under-scores non-English answers that are equally well-grounded).',
+  }
+};</script>
+<script src="/static/js/shared.js"></script>
+<script src="/static/js/i18n.js"></script>
+<script src="/static/js/ask-widget.js"></script>
+<script>
+(function(){
+  const suggestions = {
+    en: ["What is the cultural significance of Wadjemup to Noongar people?", "What happened here during WWII?", "Why is the island called Rottnest?"],
+    zh: ["Wadjemup对Noongar人有什么文化意义?", "二战期间这里发生了什么?", "为什么这个岛叫Rottnest?"],
+    ja: ["Wadjemupはヌンガー族にとってどんな文化的意味がありますか?", "第二次世界大戦中ここで何がありましたか?", "なぜこの島はRottnestと呼ばれるのですか?"],
+    fr: ["Quelle est la signification culturelle de Wadjemup pour le peuple Noongar ?", "Que s'est-il passé ici pendant la Seconde Guerre mondiale ?", "Pourquoi l'île s'appelle-t-elle Rottnest ?"],
+  };
+  const sugWrap = document.getElementById('rw-learn-suggestions');
+  function renderSuggestions() {
+    const lang = RWLang.getLang();
+    sugWrap.innerHTML = suggestions[lang].map(q => `<button class="rw-chip" style="cursor:pointer;border:none;" data-q="${q.replace(/"/g,'&quot;')}">${q}</button>`).join('');
+    sugWrap.querySelectorAll('[data-q]').forEach(btn => btn.addEventListener('click', () => {
+      document.getElementById('rw-learn-q').value = btn.dataset.q;
+      document.getElementById('rw-learn-ask').click();
+    }));
+  }
+  document.querySelectorAll('.rw-lang-pill').forEach(b => b.addEventListener('click', renderSuggestions));
+  renderSuggestions();
+
+  RWAsk.wire('#rw-learn-q', '#rw-learn-ask', '#rw-learn-answer', { getLang: () => RWLang.getLang(), voice: true });
+
+  const grid = document.getElementById('rw-learn-grid');
+  fetch('/api/catalog?category=' + encodeURIComponent('Culture & History') + '&limit=6')
+    .then(r => r.json())
+    .then(data => {
+      grid.innerHTML = data.items.map(item => `
+        <a href="/r/${item.resource_id}" class="rw-card rw-catalog-card rw-link-plain">
+          <img class="rw-catalog-thumb" src="/api/thumbnail/${item.resource_id}" alt="${item.title}" loading="lazy" onerror="this.style.display='none'" />
+          <div class="rw-catalog-body">
+            <h3 class="rw-catalog-title">${item.title.replace(' | Rottnest Island','')}</h3>
+            ${item.hook ? `<p class="rw-catalog-hook">${item.hook}</p>` : ''}
+          </div>
+        </a>
+      `).join('');
+    });
+})();
+</script>
+</body>
+</html>
